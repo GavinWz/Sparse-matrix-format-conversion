@@ -1,5 +1,16 @@
 # 稀疏矩阵ST格式转换为DIA格式
 
+## 编译运行
+
+```
+git clone https://github.com/GavinWz/Sparse-matrix-format-conversion.git
+
+cd st_to_dia
+
+make
+
+./test.exe (Linux为./test)
+```
 ## 目标
 
 将ST格式存储的稀疏矩阵转换为DIA格式存储
@@ -31,8 +42,8 @@ int st_read(char* filename,double **ast,int **ist, int **jst)
 
 char* filename: 保存st格式稀疏矩阵的文件的文件名
 double* ast: 非零元数组  
-int n_ast: 非零元个数  
 int* ist: 行偏移数组  
+int* jst: 列偏移数组  
 
 
 2. dpre_usconv_st2dia
