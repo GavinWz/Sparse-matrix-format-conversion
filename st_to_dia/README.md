@@ -19,8 +19,23 @@
 * st_to_dia_test.c: 测试
 
 ## 函数及参数含义
+1. st_read
+```c
+int st_read(char* filename,double **ast,int **ist, int **jst)
+```
+功能：
 
-1. dpre_usconv_st2dia
+    从文件中读取st格式稀疏矩阵，将结果保存在三个数组中
+
+参数说明：
+
+char* filename: 保存st格式稀疏矩阵的文件的文件名
+double* ast: 非零元数组  
+int n_ast: 非零元个数  
+int* ist: 行偏移数组  
+
+
+2. dpre_usconv_st2dia
 ```c
 void dpre_usconv_st2dia(
     int m, int n,double* ast,int n_ast,int* ist,
@@ -44,21 +59,6 @@ void dpre_usconv_st2dia(
     int* NDIAG: 保存DIA格式矩阵的对角线个数  
     int **idiag: 将生成的对角线偏移编号带出函数。中心对角线为0，向右上递增为1,2，…,向左下递减为-1.-2,….  
     double **val_dia: 将转换后生成的结果数组带出函数。此数组为一维数组，按行优先保存生成的二维数组。
-
-2. st_read
-```c
-int st_read(char* filename,double **ast,int **ist, int **jst)
-```
-功能：
-
-    从文件中读取st格式稀疏矩阵，将结果保存在三个数组中
-
-参数说明：
-
-char* filename: 保存st格式稀疏矩阵的文件的文件名
-double* ast: 非零元数组  
-int n_ast: 非零元个数  
-int* ist: 行偏移数组  
 
 3. dia_write
 ```c
