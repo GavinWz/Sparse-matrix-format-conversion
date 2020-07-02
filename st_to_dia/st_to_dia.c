@@ -97,8 +97,8 @@ int st_read(char* filename,double **ast,int **ist, int **jst){
 void st_write(char* filename,  int m, int n, int nst, int ist[], int jst[], double ast[], 
   char *title ){
     FILE* file = fopen(filename, "w+");
-    fprintf (file, " Convert a sparse matrix from ST to DIA format.\n" );
-    fprintf (file, " ST: sparse triplet,    I, J,  A.\n" );
+    fprintf (file, "Convert a sparse matrix from ST to DIA format.\n" );
+    fprintf (file, "ST: sparse triplet,    I, J,  A.\n" );
     int k;
     fprintf (file, "\n" );
     fprintf (file, "%s\n", title );
