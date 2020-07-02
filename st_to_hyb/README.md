@@ -22,7 +22,7 @@ make
     5 0 3 9 
     0 6 0 4
     
-测试上述矩阵的ST格式转换为HYB格式，结果见output.txt
+测试上述矩阵的ST格式转换为HYB格式，结果见[output.txt](https://github.com/GavinWz/Sparse-matrix-format-conversion/blob/master/st_to_hyb/input.txt)
 
 注：
 
