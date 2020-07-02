@@ -1,24 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include"st_to_hyb.h"
 
-typedef struct st{
-    int *ist;
-    int *jst;
-    double *ast;
-    int n_val;
-} st_fmt;
-
-typedef struct hyb{ 
-    double** eData;
-    int** offset;
-    int max;
-    int* ist;
-    int* jst;
-    double* ast;
-    int n_val;
-} hyb_fmt;
-
-// int st_read(char* filename,double **ast,int **ist, int **jst){
 void st_read(char* filename, st_fmt* st){
     (*st).ast = (double*)malloc(sizeof(double) * 10);
     (*st).ist = (int*)malloc(sizeof(int) * 10);
@@ -34,37 +17,6 @@ void st_read(char* filename, st_fmt* st){
         index++;
     }
     (*st).n_val = index;
-    fclose(file);
-}
-
-void hyb_write(char* filename, hyb_fmt hyb, int n_row){
-    FILE *file = fopen(filename, "w+");
-    if(file == NULL){
-        printf("Can't open the file.\n");
-        return;
-    }
-    fprintf(file, "The final HYB format martrix: \n");
-
-    fprintf(file, "\nELL Column indices: \n");
-    for(int i = 0; i < n_row; i++){
-        for(int j = 0; j < hyb.max; j++){
-            fprintf(file, "%-10d", *((int*)hyb.offset+i*hyb.max+j));
-        }
-        fprintf(file, "\n");
-    }
-    fprintf(file, "\nELL Values: \n");
-    for(int i = 0; i < n_row; i++){
-        for(int j = 0; j < hyb.max; j++){
-            fprintf(file, "%-10.4lf", *((double*)hyb.eData+i*hyb.max+j));
-        }
-        fprintf(file, "\n");
-    }
-    fprintf(file, "\nST Martrix: \n");
-    fprintf(file, "i         j         v         \n");
-    fprintf(file, "------------------------------\n");
-    for(int i = 0; i < hyb.n_val; i++){
-        fprintf(file, "%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
-    }
     fclose(file);
 }
 
@@ -101,53 +53,55 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
             (*hyb).n_val++;
         }
     }
-
 }
-void test_read(){
-    st_fmt st;
-    st_read("test.txt", &st);
-    for(int i = 0; i < st.n_val; i++){
-        printf("%d\t%d\t%lf\n", st.ist[i],st.jst[i],st.ast[i]);
+
+void st_write(char* filename,  int m, int n, int nst, int ist[], int jst[], double ast[], 
+  char *title ){
+    FILE* file = fopen(filename, "w+");
+    fprintf (file, " Convert a sparse matrix from ST to DIA format.\n" );
+    fprintf (file, " ST: sparse triplet,    I, J,  A.\n" );
+    int k;
+    fprintf (file, "\n" );
+    fprintf (file, "%s\n", title );
+    fprintf (file, "     #     I     J       A\n" );
+    fprintf (file, "  ----  ----  ----  --------------\n" );
+    fprintf (file, "\n" );
+    for ( k = 0; k < nst; k++ )
+    {
+        fprintf (file, "  %4d  %4d  %4d  %10.8g\n", k, ist[k], jst[k], ast[k] );
     }
-    printf("%d", st.n_val);
+    fclose(file);
+    return;
 }
 
+void hyb_write(char* filename, hyb_fmt hyb, int n_row){
+    FILE *file = fopen(filename, "a");
+    if(file == NULL){
+        printf("Can't open the file.\n");
+        return;
+    }
+    fprintf(file, "\n------------------------------\n");
+    fprintf(file, "The final HYB format martrix: \n");
 
-int main(){
-    st_fmt st;
-    int ist[9] = {0,0,1,1,2,2,2,3,3};
-    int jst[9] = {0,1,1,2,0,2,3,1,3};
-    double ast[9] = {1,7,2,8,5,3,9,6,4};
-    st.ist = ist;
-    st.jst = jst;
-    st.ast = ast;
-    st.n_val = 9;
-
-    int n_row = 4;
-    int n_col = 4;
-
-    hyb_fmt hyb;
-    hyb.max = 2;
-
-    st_to_hyb(st, &hyb, n_row, n_row);
-    hyb_write("output.txt", hyb, n_row);
-
-    // for(int i = 0; i < n_row; i++){
-    //     for(int j = 0; j < hyb.max; j++){
-    //         printf("%d\t", *((int*)hyb.offset+i*hyb.max+j));
-    //     }
-    //     printf(("\n"));
-    // }
-    // printf("\n");
-    // for(int i = 0; i < n_row; i++){
-    //     for(int j = 0; j < hyb.max; j++){
-    //         printf("%lf\t", *((double*)hyb.eData+i*hyb.max+j));
-    //     }
-    //     printf(("\n"));
-    // }
-    // for(int i = 0; i < hyb.n_val; i++){
-    //     printf("%d\t%d\t%lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
-    // }
-    // test_read();
-}   
-
+    fprintf(file, "\n\tELL Column indices: \n\t");
+    for(int i = 0; i < n_row; i++){
+        for(int j = 0; j < hyb.max; j++){
+            fprintf(file, "%-10d", *((int*)hyb.offset+i*hyb.max+j));
+        }
+        fprintf(file, "\n\t");
+    }
+    fprintf(file, "\n\tELL Values: \n\t");
+    for(int i = 0; i < n_row; i++){
+        for(int j = 0; j < hyb.max; j++){
+            fprintf(file, "%-10.4lf", *((double*)hyb.eData+i*hyb.max+j));
+        }
+        fprintf(file, "\n\t");
+    }
+    fprintf(file, "\n\tST Martrix: \n\t");
+    fprintf(file, "i         j         v         \n\t");
+    fprintf(file, "------------------------------\n\t");
+    for(int i = 0; i < hyb.n_val; i++){
+        fprintf(file, "%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
+    }
+    fclose(file);
+}
