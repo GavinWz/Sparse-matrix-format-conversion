@@ -1,5 +1,5 @@
- Convert a sparse matrix from ST to DIA format.
- ST: sparse triplet,    I, J,  A.
+Convert a sparse matrix from ST to DIA format.
+ST: sparse triplet,    I, J,  A.
 
   The matrix in ST format:
      #     I     J       A
