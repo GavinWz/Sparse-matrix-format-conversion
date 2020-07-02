@@ -38,10 +38,16 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
             cnt++;
         else{
             index = st.ist[i];
+            while(j_index < (*hyb).max){
+                printf("%d\t%d\n",st.ist[i], j_index);
+                *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = -1;
+                j_index++;
+            }
             cnt = 1;
             j_index = 0;
         }
         if(cnt <= (*hyb).max){
+            
             *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = st.jst[i];
             *((double*)(*hyb).eData+st.ist[i]*(*hyb).max+j_index) = st.ast[i];
             j_index++;
