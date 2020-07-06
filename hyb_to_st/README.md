@@ -1,4 +1,4 @@
-# 稀疏矩阵ST格式转换为HYB格式
+# 稀疏矩阵HYB格式转换为ST格式
 
 ## 编译运行
 
@@ -22,7 +22,7 @@ $ ./hyb_to_st.exe (Linux为./hyb_to_st)
     5 0 3 9 
     0 6 0 4
     
-测试上述矩阵的ST格式转换为HYB格式，结果见[output.txt](https://github.com/GavinWz/Sparse-matrix-format-conversion/blob/master/hyb_to_st/output.txt)
+测试上述矩阵的HYB格式转换为ST格式，结果见[output.txt](https://github.com/GavinWz/Sparse-matrix-format-conversion/blob/master/hyb_to_st/output.txt)
 
 注：
 
