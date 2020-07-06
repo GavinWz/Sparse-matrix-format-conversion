@@ -2,31 +2,6 @@
 #include<stdlib.h>
 #include"hyb_to_st.h"
 
-void hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row){
-    (*st).ist = (int*)malloc(sizeof(int) * n_row * hyb.max);
-    (*st).jst = (int*)malloc(sizeof(int) * n_row * hyb.max);
-    (*st).ast = (double*)malloc(sizeof(double) * n_row * hyb.max);
-    int index = 0;
-    int i, j;
-    for(i = 0; i < n_row; i++){
-        for(j = 0; j < hyb.max; j++){
-            if(*((int*)hyb.offset + i * hyb.max + j) == -1)
-                break;
-            (*st).ist[index] = i;
-            (*st).jst[index] = *((int*)hyb.offset + i * hyb.max + j);
-            (*st).ast[index] = *((double*)hyb.eData + i * hyb.max + j);
-            index++;
-        }
-    }
-    for(i = 0; i < hyb.n_val; i++){
-        (*st).ist[index] = hyb.ist[i];
-        (*st).jst[index] = hyb.jst[i];
-        (*st).ast[index] = hyb.ast[i];
-        index++;
-    }
-    (*st).n_val = index;
-}
-
 void hyb_read(char* filename, hyb_fmt *hyb){
     int n_row, n_col;
     int i, j;
@@ -59,6 +34,31 @@ void hyb_read(char* filename, hyb_fmt *hyb){
         fscanf(file, "%d%d%lf", &(*hyb).ist[i], &(*hyb).jst[i], &(*hyb).ast[i]);
     }
     (*hyb).n_val = i;
+}
+
+void hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row){
+    (*st).ist = (int*)malloc(sizeof(int) * n_row * hyb.max);
+    (*st).jst = (int*)malloc(sizeof(int) * n_row * hyb.max);
+    (*st).ast = (double*)malloc(sizeof(double) * n_row * hyb.max);
+    int index = 0;
+    int i, j;
+    for(i = 0; i < n_row; i++){
+        for(j = 0; j < hyb.max; j++){
+            if(*((int*)hyb.offset + i * hyb.max + j) == -1)
+                break;
+            (*st).ist[index] = i;
+            (*st).jst[index] = *((int*)hyb.offset + i * hyb.max + j);
+            (*st).ast[index] = *((double*)hyb.eData + i * hyb.max + j);
+            index++;
+        }
+    }
+    for(i = 0; i < hyb.n_val; i++){
+        (*st).ist[index] = hyb.ist[i];
+        (*st).jst[index] = hyb.jst[i];
+        (*st).ast[index] = hyb.ast[i];
+        index++;
+    }
+    (*st).n_val = index;
 }
 
 void st_write(char* filename,st_fmt st){
