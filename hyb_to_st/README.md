@@ -13,7 +13,7 @@ $ ./hyb_to_st.exe (Linux为./hyb_to_st)
 ```
 ## 目标
 
-将ST格式存储的稀疏矩阵转换为HYB格式存储
+将HYB格式存储的稀疏矩阵转换为ST格式存储
 
 例： 
 
@@ -69,8 +69,8 @@ void hyb_read(char* filename, hyb_fmt *hyb)
 
 参数说明：
 
-char* filename: 保存HYB格式稀疏矩阵的文件的文件名
-hyb_fmt *hyb: 保存读取结果的hyb格式结构体变量
+    char* filename: 保存HYB格式稀疏矩阵的文件的文件名
+    hyb_fmt *hyb: 保存读取结果的hyb格式结构体变量
 
 
 2. hyb_to_st
@@ -82,6 +82,7 @@ void hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row)
     将ST格式矩阵转换为HYB格式，将结果保存在HYB结构体中
 
 参数说明：
+
     hyb_fmt hyb:      将要转换的HYB类型矩阵
     st_fmt *st:   保存结果的ST类型矩阵
     int n_row:      原二维矩阵的行数    
