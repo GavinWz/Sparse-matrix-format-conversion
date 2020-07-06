@@ -2,14 +2,14 @@
 
 ## 编译运行
 
-```
-git clone https://github.com/GavinWz/Sparse-matrix-format-conversion.git
+```shell
+$ git clone https://github.com/GavinWz/Sparse-matrix-format-conversion.git
 
-cd hyb_to_st
+$ cd hyb_to_st
 
-make
+$ make
 
-./hyb_to_st.exe (Linux为./hyb_to_st)
+$ ./hyb_to_st.exe (Linux为./hyb_to_st)
 ```
 ## 目标
 
