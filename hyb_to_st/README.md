@@ -30,7 +30,7 @@ $ ./hyb_to_st.exe (Linux为./hyb_to_st)
 
 ## 主要文件
 
-* input.txt: 存储ST格式稀疏矩阵的文件, 用于程序读取
+* input.txt: 存储HYB格式稀疏矩阵的文件, 用于程序读取
 * output.txt: 存储程序运行结果
 * hyb_to_st.c: 功能函数的实现
 * hyb_to_st_test.c: 测试
