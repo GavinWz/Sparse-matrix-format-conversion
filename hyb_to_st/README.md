@@ -70,7 +70,7 @@ void hyb_read(char* filename, hyb_fmt *hyb)
 参数说明：
 
     char* filename: 保存HYB格式稀疏矩阵的文件的文件名
-    hyb_fmt *hyb: 保存读取结果的hyb格式结构体变量
+    hyb_fmt *hyb: 保存读取结果的hyb格式结构体变量指针
 
 
 2. hyb_to_st
@@ -79,7 +79,7 @@ void hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row)
 ```
 功能：
 
-    将ST格式矩阵转换为HYB格式，将结果保存在HYB结构体中
+    将HYB格式矩阵转换为ST格式，将结果保存在st_fmt结构体变量中
 
 参数说明：
 
@@ -93,7 +93,7 @@ void st_write(char* filename,st_fmt st)
 ```
 功能：
 
-    将原ST数组展示在输出文件中
+    将转换后的ST数组展示在输出文件中
 
 参数说明：
 
