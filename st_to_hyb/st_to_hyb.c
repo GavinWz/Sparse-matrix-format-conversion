@@ -2,10 +2,10 @@
 #include<stdlib.h>
 #include"st_to_hyb.h"
 
-void st_read(char* filename, st_fmt* st){
-    (*st).ast = (double*)malloc(sizeof(double) * 10);
-    (*st).ist = (int*)malloc(sizeof(int) * 10);
-    (*st).jst = (int*)malloc(sizeof(int) * 10);
+void st_read(char* filename, st_fmt* st, int n_val){
+    (*st).ast = (double*)malloc(sizeof(double) * n_val);
+    (*st).ist = (int*)malloc(sizeof(int) * n_val);
+    (*st).jst = (int*)malloc(sizeof(int) * n_val);
     FILE *file = fopen(filename, "r");
     if(file == NULL){
         printf("Can't open the file.\n");
@@ -16,7 +16,7 @@ void st_read(char* filename, st_fmt* st){
         fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
         index++;
     }
-    (*st).n_val = index;
+    (*st).n_val = n_val;
     fclose(file);
 }
 
@@ -104,7 +104,7 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
         fprintf(file, "\n\t");
     }
     fprintf(file, "\n\tST Martrix: \n\t");
-    fprintf(file, "i         j         v         \n\t");
+    fprintf(file, "I         J         A         \n\t");
     fprintf(file, "------------------------------\n\t");
     for(int i = 0; i < hyb.n_val; i++){
         fprintf(file, "%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
