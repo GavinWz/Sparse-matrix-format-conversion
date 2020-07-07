@@ -2,16 +2,16 @@
 #include<stdlib.h>
 #include"hyb_to_st.h"
 
-void hyb_read(char* filename, hyb_fmt *hyb){
+int hyb_read(char* filename, hyb_fmt *hyb){
     int n_row, n_col;
     int i, j;
 
     FILE* file = fopen(filename, "r");
     if(file == NULL){
         printf("Can't open the file.\n");
-        return;
+        return 1;
     }
-    fscanf(file, "%d,%d,%d", &n_row, &n_col, &(*hyb).max);
+    fscanf(file, "%d%d%d", &n_row, &n_col, &(*hyb).max);
 
     (*hyb).offset = (int**)malloc(sizeof(int)*n_col*(*hyb).max);
     (*hyb).eData = (double**)malloc(sizeof(double)*n_col*(*hyb).max);
@@ -34,6 +34,7 @@ void hyb_read(char* filename, hyb_fmt *hyb){
         fscanf(file, "%d%d%lf", &(*hyb).ist[i], &(*hyb).jst[i], &(*hyb).ast[i]);
     }
     (*hyb).n_val = i;
+    return n_row;
 }
 
 void hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row){
@@ -109,4 +110,13 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
         fprintf(file, "%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
     }
     fclose(file);
+}
+
+void hyb_to_st_run(char* ifilename, char* ofilename){
+    hyb_fmt hyb;
+    int n_row = hyb_read(ifilename, &hyb);
+    st_fmt st;
+    hyb_to_st(hyb, &st, n_row);
+    hyb_write(ofilename, hyb, n_row);
+    st_write(ofilename, st);
 }

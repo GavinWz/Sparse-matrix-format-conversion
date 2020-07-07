@@ -1,4 +1,4 @@
-# CC = gcc
+#CC = gcc
 CC = cl
 
 hyb_to_st: hyb_to_st_test.c hyb_to_st.obj

@@ -61,7 +61,7 @@ typedef struct hyb{
 ## 函数及参数含义
 1. hyb_read
 ```c
-void hyb_read(char* filename, hyb_fmt *hyb)
+int hyb_read(char* filename, hyb_fmt *hyb)
 ```
 功能：
 
@@ -72,6 +72,9 @@ void hyb_read(char* filename, hyb_fmt *hyb)
     char* filename: 保存HYB格式稀疏矩阵的文件的文件名
     hyb_fmt *hyb: 保存读取结果的hyb格式结构体变量指针
 
+返回值：
+
+    原矩阵行数
 
 2. hyb_to_st
 ```c
@@ -113,3 +116,16 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row)
     char* filename: 保存输出结果的文件的文件名
     hyb_fmt hyb:   保存结果的HYB类型矩阵
     int n_row:      原二维矩阵的行数
+
+5. hyb_to_st_run 
+```c
+void hyb_to_st_run(char* ifilename, char* ofilename)
+```
+功能：
+
+    给出保存HYB矩阵的输入文件名和保存转换结果的输出文件名，进行读取、转换和保存
+
+参数说明：
+
+    char* ifilename: 保存HYB矩阵的文件名
+    char* ofilename: 保存ST结果矩阵的文件名

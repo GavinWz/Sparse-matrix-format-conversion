@@ -15,10 +15,12 @@ typedef struct hyb{
     int n_val;
 } hyb_fmt;
 
-void hyb_read(char* filename, hyb_fmt *hyb);
+int hyb_read(char* filename, hyb_fmt *hyb);
 
 void st_write(char* filename,st_fmt st);
 
 void hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row);
 
 void hyb_write(char* filename, hyb_fmt hyb, int n_row);
+
+void hyb_to_st_run(char* ifilename, char* ofilename);
