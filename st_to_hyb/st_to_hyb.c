@@ -2,22 +2,25 @@
 #include<stdlib.h>
 #include"st_to_hyb.h"
 
-void st_read(char* filename, st_fmt* st, int n_val){
-    (*st).ast = (double*)malloc(sizeof(double) * n_val);
-    (*st).ist = (int*)malloc(sizeof(int) * n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+void st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max){
     FILE *file = fopen(filename, "r");
     if(file == NULL){
         printf("Can't open the input file.\n");
         return;
     }
+    int n_val;
+    fscanf(file, "%d%d%d%d", &(*n_row), &(*n_col), &n_val, &(*max));
+    
+    (*st).ast = (double*)malloc(sizeof(double) * n_val);
+    (*st).ist = (int*)malloc(sizeof(int) * n_val);
+    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+    
     int index = 0;
     while(feof(file) == 0){
         fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
         index++;
     }
     (*st).n_val = n_val;
-    printf("%d", index);
     fclose(file);
 }
 
@@ -62,20 +65,36 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
     }
 }
 
-void st_write(char* filename,  int m, int n, int nst, int ist[], int jst[], double ast[], 
-  char *title ){
-    FILE* file = fopen(filename, "w+");
-    fprintf (file, " Convert a sparse matrix from ST to DIA format.\n" );
-    fprintf (file, " ST: sparse triplet,    I, J,  A.\n" );
+// void st_write(char* filename,  int m, int n, int nst, int ist[], int jst[], double ast[], 
+//   char *title ){
+//     FILE* file = fopen(filename, "w+");
+//     fprintf (file, " Convert a sparse matrix from ST to DIA format.\n" );
+//     fprintf (file, " ST: sparse triplet,    I, J,  A.\n" );
+//     int k;
+//     fprintf (file, "\n" );
+//     fprintf (file, "%s\n", title );
+//     fprintf (file, "     #     I     J       A\n" );
+//     fprintf (file, "  ----  ----  ----  --------------\n" );
+//     fprintf (file, "\n" );
+//     for ( k = 0; k < nst; k++ )
+//     {
+//         fprintf (file, "  %4d  %4d  %4d  %10.8g\n", k, ist[k], jst[k], ast[k] );
+//     }
+//     fclose(file);
+//     return;
+// }
+
+void st_write(char* filename,st_fmt st){
+    FILE* file = fopen(filename, "a");
     int k;
-    fprintf (file, "\n" );
-    fprintf (file, "%s\n", title );
+    fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
+    fprintf (file, "  The matrix in ST format:\n" );
     fprintf (file, "     #     I     J       A\n" );
     fprintf (file, "  ----  ----  ----  --------------\n" );
     fprintf (file, "\n" );
-    for ( k = 0; k < nst; k++ )
+    for ( k = 0; k < st.n_val; k++ )
     {
-        fprintf (file, "  %4d  %4d  %4d  %10.8g\n", k, ist[k], jst[k], ast[k] );
+        fprintf (file, "  %4d  %4d  %4d  %10.8g\n", k, st.ist[k], st.jst[k], st.ast[k] );
     }
     fclose(file);
     return;
@@ -113,18 +132,17 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
     fclose(file);
 }
 
-// st_to_hyb_run(char* ifilename, char* ofilename){
+void st_to_hyb_run(char* ifilename, char* ofilename){
+    st_fmt st;
+    int n_row;
+    int n_col;
+    int max;
+    st_read(ifilename, &st, &n_row, &n_col, &max);
+    
+    hyb_fmt hyb;
+    hyb.max = max;
 
-//     st_fmt st;
-//     st_read(ifilename, &st, 8);
-
-//     int n_row = 4;
-//     int n_col = 4;
-
-//     hyb_fmt hyb;
-//     hyb.max = 2;
-
-//     st_to_hyb(st, &hyb, n_row, n_row);
-//     st_write ("output.txt", n_row, n_col, st.n_val, st.ist, st.jst, st.ast, "  The matrix in ST format:" );
-//     hyb_write("output.txt", hyb, n_row);
-// }
+    st_to_hyb(st, &hyb, n_row, n_row);
+    st_write (ofilename, st);
+    hyb_write(ofilename, hyb, n_row);
+}
