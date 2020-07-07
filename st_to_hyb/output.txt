@@ -30,6 +30,6 @@ The final HYB format martrix:
 	6.0000    4.0000    
 	
 	ST Martrix: 
-	i         j         v         
+	I         J         A         
 	------------------------------
 	2         3         9.0000    

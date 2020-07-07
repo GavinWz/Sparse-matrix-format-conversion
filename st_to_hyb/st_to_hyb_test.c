@@ -11,7 +11,7 @@ void test(){
     测试上述矩阵的ST格式转换为HYB格式，结果见output.txt
 */
     st_fmt st;
-    st_read("input.txt", &st);
+    st_read("input.txt", &st, 8);
 
     int n_row = 4;
     int n_col = 4;

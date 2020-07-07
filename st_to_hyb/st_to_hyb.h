@@ -15,7 +15,7 @@ typedef struct hyb{
     int n_val;
 } hyb_fmt;
 
-void st_read(char* filename, st_fmt* st);
+void st_read(char* filename, st_fmt* st, int n_val);
 
 void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col);
 

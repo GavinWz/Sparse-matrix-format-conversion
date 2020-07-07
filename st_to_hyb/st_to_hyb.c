@@ -8,7 +8,7 @@ void st_read(char* filename, st_fmt* st, int n_val){
     (*st).jst = (int*)malloc(sizeof(int) * n_val);
     FILE *file = fopen(filename, "r");
     if(file == NULL){
-        printf("Can't open the file.\n");
+        printf("Can't open the input file.\n");
         return;
     }
     int index = 0;
@@ -17,6 +17,7 @@ void st_read(char* filename, st_fmt* st, int n_val){
         index++;
     }
     (*st).n_val = n_val;
+    printf("%d", index);
     fclose(file);
 }
 
@@ -39,7 +40,7 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
         else{
             index = st.ist[i];
             while(j_index < (*hyb).max){
-                printf("%d\t%d\n",st.ist[i], j_index);
+                // printf("%d\t%d\n",st.ist[i], j_index);
                 *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = -1;
                 j_index++;
             }
@@ -111,3 +112,19 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
     }
     fclose(file);
 }
+
+// st_to_hyb_run(char* ifilename, char* ofilename){
+
+//     st_fmt st;
+//     st_read(ifilename, &st, 8);
+
+//     int n_row = 4;
+//     int n_col = 4;
+
+//     hyb_fmt hyb;
+//     hyb.max = 2;
+
+//     st_to_hyb(st, &hyb, n_row, n_row);
+//     st_write ("output.txt", n_row, n_col, st.n_val, st.ist, st.jst, st.ast, "  The matrix in ST format:" );
+//     hyb_write("output.txt", hyb, n_row);
+// }
