@@ -96,7 +96,7 @@ void st_write(char* filename,st_fmt st)
 ```
 功能：
 
-    将转换后的ST数组展示在输出文件中
+    将转换后的ST矩阵展示在输出文件中
 
 参数说明：
 
