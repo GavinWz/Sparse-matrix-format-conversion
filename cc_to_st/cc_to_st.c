@@ -1,285 +1,99 @@
-# include <stdlib.h>
-# include <stdio.h>
-# include <math.h>
-# include <time.h>
-# include <string.h>
+#include"cc_to_st.h"
 
-# include "cc_to_st.h"
-
-/******************************************************************************/
-
-void cc_print ( int m, int n, int ncc, int icc[], int ccc[], double acc[], 
-  char *title )
-
-/******************************************************************************/
-/*
-  Purpose:
-
-    CC_PRINT prints a sparse matrix in CC format.
-
-  Licensing:
-
-    This code is distributed under the GNU LGPL license.
-
-  Modified:
-
-    23 July 2014
-
-  Author:
-
-    John Burkardt
-
-  Parameters:
-
-    Input, int M, the number of rows in the matrix.
-
-    Input, int N, the number of columns in the matrix.
-
-    Input, int NCC, the number of CC elements.
-
-    Input, int ICC[NCC], the CC rows.
-
-    Input, int CCC[N+1], the compressed CC columns.
-
-    Input, double ACC[NCC], the CC values.
-
-    Input, char *TITLE, a title.
-*/
-{
-  int i;
-  int j;
-  int k;
-
-  printf ( "\n" );
-  printf ( "%s\n", title );
-  printf ( "     #     I     J           A\n" );
-  printf ( "  ----  ----  ----  ----------------\n" );
-  printf ( "\n" );
-
-  if ( ccc[0] == 0 )
-  {
-    j = 0;
-    for ( k = 0; k < ncc; k++ )
-    {
-      i = icc[k];
-      while ( ccc[j+1] <= k )
-      {
-        j = j + 1;
-      }
-      printf ( "  %4d  %4d  %4d  %16.8g\n", k, i, j, acc[k] );
-    }
-  }
-  else
-  {
-    j = 1;
-    for ( k = 0; k < ncc; k++ )
-    {
-      i = icc[k];
-      while ( ccc[j] <= k + 1 )
-      {
-        j = j + 1;
-      }
-      printf ( "  %4d  %4d  %4d  %16.8g\n", k + 1, i, j, acc[k] );
-    }
-  }
-
-  return;
-}
-/******************************************************************************/
-
-void cc_to_st ( int m, int n, int ncc, int icc[], int ccc[], double acc[], 
-  int *nst, int ist[], int jst[], double ast[] )
-
-/******************************************************************************/
-/*
-  Purpose:
-
-    CC_TO_ST converts sparse matrix information from CC to ST format.
-
-  Discussion:
-
-    Only JST actually needs to be computed.  The other three output 
-    quantities are simply copies.  
+void cc_read(char* filename, cc_fmt* cc, int* row){
+    FILE* file = fopen("input.txt", "r");
+    int n_row, n_col, n_val;
+    fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
+    (*row) = n_row;
+    (*cc).rcc = (int*) malloc(sizeof(int) * (n_row + 1));
+    (*cc).ccc = (int*) malloc(sizeof(int) * n_val);
+    (*cc).vcc = (double*) malloc(sizeof(double) * n_val);
     
-  Licensing:
-
-    This code is distributed under the GNU LGPL license. 
-
-  Modified:
-
-    23 July 2014
-
-  Author:
-
-    John Burkardt
-
-  Parameters:
-
-    Input, int M, the number of rows.
-
-    Input, int N, the number of columns.
-
-    Input, int NCC, the number of CC elements.
-
-    Input, int ICC[NCC], the CC rows.
-
-    Input, int CCC[N+1], the CC compressed columns.
-
-    Input, double ACC[NCC], the CC values.
-
-    Output, int NST, the number of ST elements.
-
-    Output, int IST[NST], JST[NST], the ST rows and columns.
-
-    Output, double AST[NST], the ST values.
-*/
-{
-  int j;
-  int jhi;
-  int jlo;
-  int k;
-  int khi;
-  int klo;
-
-  *nst = 0;
-
-  if ( ccc[0] == 0 )
-  {
-    jlo = 0;
-    jhi = n - 1;
-  
-    for ( j = jlo; j <= jhi; j++ )
-    {
-      klo = ccc[j];
-      khi = ccc[j+1] - 1;
-
-      for ( k = klo; k <= khi; k++ )
-      {
-        ist[*nst] = icc[k];
-        jst[*nst] = j;
-        ast[*nst] = acc[k];
-        *nst = *nst + 1;
-      }
+    for(int i = 0; i < n_val; i++){
+        if(i <= n_row){
+            fscanf(file, "%d%lf%d", &(*cc).rcc[i], &(*cc).vcc[i], &(*cc).ccc[i]);
+        }
+        else
+        {
+            fscanf(file, "%d%lf", &(*cc).rcc[i], &(*cc).vcc[i]);
+        }
     }
-  }
-  else
-  {
-    jlo = 1;
-    jhi = n;
-  
-    for ( j = jlo; j <= jhi; j++ )
-    {
-      klo = ccc[j-1];
-      khi = ccc[j] - 1;
+    (*cc).n_row = n_row;
+}
 
-      for ( k = klo; k <= khi; k++ )
-      {
-        ist[*nst] = icc[k-1];
-        jst[*nst] = j;
-        ast[*nst] = acc[k-1];
-        *nst = *nst + 1;
-      }
+void cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
+    int index = 1;
+    int n_val = cc.ccc[n_row];  //rcc[n_row]记录非零元个数
+    (*st).ist = (int*)malloc(sizeof(int) * n_val);
+    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+    (*st).ast = (double*)malloc(sizeof(double) * n_val);
+   
+    
+    for(int i = 0; i < n_val; i++){  
+        
+        if(i == cc.ccc[index])
+            index++;
+        (*st).ist[i] = index-1;
+        (*st).jst[i] = cc.rcc[i];
+        (*st).ast[i] = cc.vcc[i];
     }
-  }
-
-  return;
+    (*st).n_val = cc.ccc[n_row];
 }
-/******************************************************************************/
 
-void st_print ( int m, int n, int nst, int ist[], int jst[], double ast[], 
-  char *title )
-
-/******************************************************************************/
-/*
-  Purpose:
-
-    ST_PRINT prints a sparse matrix in ST format.
-
-  Licensing:
-
-    This code is distributed under the GNU LGPL license.
-
-  Modified:
-
-    15 July 2014
-
-  Author:
-
-    John Burkardt
-
-  Parameters:
-
-    Input, int M, the number of rows.
-
-    Input, int N, the number of columns.
-
-    Input, int NST, the number of ST elements.
-
-    Input, int IST[NST], JST[NST], the ST rows and columns.
-
-    Input, double AST[NST], the ST values.
-
-    Input, char *TITLE, a title.
-*/
-{
-  int k;
-
-  printf ( "\n" );
-  printf ( "%s\n", title );
-  printf ( "     #     I     J       A\n" );
-  printf ( "  ----  ----  ----  --------------\n" );
-  printf ( "\n" );
-  for ( k = 0; k < nst; k++ )
-  {
-    printf ( "  %4d  %4d  %4d  %16.8g\n", k, ist[k], jst[k], ast[k] );
-  }
-
-  return;
+void st_write(char* filename,st_fmt st){
+    FILE* file = fopen(filename, "a");
+    int k;
+    fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
+    fprintf (file, "  The matrix in ST format:\n" );
+    fprintf (file, "     I     J       A\n" );
+    fprintf (file, "  ----  ----  --------------\n" );
+    fprintf (file, "\n" );
+    for ( k = 0; k < st.n_val; k++ )
+    {
+        fprintf (file, "  %4d  %4d  %10.5lf\n", st.ist[k], st.jst[k], st.ast[k] );
+    }
+    fclose(file);
+    return;
 }
-/******************************************************************************/
 
-void timestamp ( )
+void cc_write(char* filename,cc_fmt cc){
+    FILE* file = fopen(filename, "w+");
+    int k;
+    fprintf (file, "\ncc: sparse triplet, Row, Col, Value.\n" );
+    fprintf (file, "  The matrix in cc format:\n" );
+    fprintf (file, "   Row    Col    Value \n" );
+    fprintf (file, "   ----   ----   ----  \n" );
+   
+    for ( k = 0; k < cc.ccc[cc.n_row]; k++ )
+    {
+        
+        if(k <= cc.n_row)
+            fprintf(file, "  %4d  %4d  %10.5lf\n", cc.rcc[k], cc.ccc[k], cc.vcc[k]);
+            
+        else
+            fprintf(file, "  %4d        %10.5lf\n", cc.rcc[k],  cc.vcc[k]);
+            
+    }
+    fclose(file);
+    return;
+}
 
-/******************************************************************************/
-/*
-  Purpose:
-
-    TIMESTAMP prints the current YMDHMS date as a time stamp.
-
-  Example:
-
-    31 May 2001 09:45:54 AM
-
-  Licensing:
-
-    This code is distributed under the GNU LGPL license.
-
-  Modified:
-
-    24 September 2003
-
-  Author:
-
-    John Burkardt
-
-  Parameters:
-
-    None
-*/
-{
-# define TIME_SIZE 40
-
-  static char time_buffer[TIME_SIZE];
-  const struct tm *tm;
-  time_t now;
-
-  now = time ( NULL );
-  tm = localtime ( &now );
-
-  strftime ( time_buffer, TIME_SIZE, "%d %B %Y %I:%M:%S %p", tm );
-
-  fprintf ( stdout, "%s\n", time_buffer );
-
-  return;
-# undef TIME_SIZE
+void cc_to_st_run(char* ifilename, char* ofilename){
+    cc_fmt cc;
+    int n_row;
+    cc_read(ifilename, &cc, &n_row);
+    // for(int i = 0; i < cc.ccc[n_row]; i++){
+    //     printf("%d %lf ", cc.rcc[i], cc.vcc[i]);
+    //     if(i < n_row)
+    //         printf("%d\n", cc.ccc[i]);
+    //     else
+    //     {
+    //         printf("\n");
+    //     }
+    // }
+    st_fmt st;
+    
+    cc_to_st(cc, &st, n_row);
+    cc_write(ofilename, cc);
+    st_write(ofilename, st);
 }
