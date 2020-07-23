@@ -1,9 +1,10 @@
 #include"cr_to_st.h"
 
-void cr_read(char* filename, cr_fmt* cr){
+void cr_read(char* filename, cr_fmt* cr, int* row){
     FILE* file = fopen("input.txt", "r");
     int n_row, n_col, n_val;
     fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
+    (*row) = n_row;
     (*cr).rcr = (int*) malloc(sizeof(int) * (n_row + 1));
     (*cr).ccr = (int*) malloc(sizeof(int) * n_val);
     (*cr).vcr = (double*) malloc(sizeof(double) * n_val);
@@ -74,4 +75,14 @@ void cr_write(char* filename,cr_fmt cr){
     return;
 }
 
+void cr_to_st_run(char* ifilename, char* ofilename){
+    cr_fmt cr;
+    int n_row;
+    cr_read(ifilename, &cr, &n_row);
 
+    st_fmt st;
+    
+    cr_to_st(cr, &st, n_row);
+    cr_write(ofilename, cr);
+    st_write(ofilename, st);
+}

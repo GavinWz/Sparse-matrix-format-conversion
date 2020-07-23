@@ -25,7 +25,7 @@ make
 ## 函数及参数含义
 1. cr_read
 ```c
-void cr_read(char* filename, cr_fmt* cr);
+void cr_read(char* filename, cr_fmt* cr, int* n_row);
 ```
 功能：
 
@@ -35,7 +35,7 @@ void cr_read(char* filename, cr_fmt* cr);
 
 char* filename: 保存cr格式稀疏矩阵的文件的文件名
 cr_fmt* cr: 输入的cr格式矩阵
-
+int* n_row: 将原矩阵行数带出函数
 
 2. cr_to_st
 ```c
