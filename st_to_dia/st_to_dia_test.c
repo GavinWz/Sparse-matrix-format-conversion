@@ -51,9 +51,9 @@ int main(){
     int m = 4;        //矩阵的行数 
     int n = 4;        //矩阵的列数
     int n_val = 9;    //非零元个数
-    char* read = "./read.txt";    //输入文件，保存st类型矩阵
+    char* read = "./input.txt";    //输入文件，保存st类型矩阵
     char* write = "./output.txt"; //输出文件，保存程序运行结果
-    st2dia(read, write, m, n, n_val);
+    st_to_dia_run(read, write);
 }
 
 // void test01 ( )

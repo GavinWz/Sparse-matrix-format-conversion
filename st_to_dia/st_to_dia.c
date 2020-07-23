@@ -61,30 +61,19 @@ void dpre_usconv_st2dia(int m,int n,double* ast,int n_ast,int* ist,int* jst,int*
 }
 
 
-// void dia_print (double *val, int n_val, int *indx, int lda, int ndiag)
-// {
 
-//   int i, j;
-//   printf("DIA Matrix:\n");
-//   for(i = 0; i < ndiag; i++){
-//     printf("%3d:\t", indx[i]);
-//     for(j = i * lda+1; j <= (i+1) * lda; j++){
-//         printf("%lf\t", val[j]);
-//     }
-//     printf("\n");
-//   }
-  
-// }
 
-int st_read(char* filename,double **ast,int **ist, int **jst){
-    *ast = (double*)malloc(sizeof(double) * 10);
-    *ist = (int*)malloc(sizeof(int) * 10);
-    *jst = (int*)malloc(sizeof(int) * 10);
+int st_read(char* filename,double **ast,int **ist, int **jst, int *n_row, int *n_col, int *n_val){
+    
     FILE *file = fopen(filename, "r");
     if(file == NULL){
         printf("Can't open the file.\n");
         return -1;
     }
+    fscanf(file, "%d%d%d", &(*n_row), &(*n_col), &(*n_val));
+    *ast = (double*)malloc(sizeof(double) * (*n_val));
+    *ist = (int*)malloc(sizeof(int) * (*n_val));
+    *jst = (int*)malloc(sizeof(int) * (*n_val));
     int index = 0;
     while(feof(file) == 0){
         fscanf(file, "%d%d%lf", &(*ist)[index], &(*jst)[index], &(*ast)[index]);
@@ -131,14 +120,15 @@ void dia_write(char* filename, double *val, int *indx, int lda, int ndiag){
     fclose(file);
 }
 
-void st2dia(char* readFile, char* writeFile, int m, int n, int n_val){
+void st_to_dia_run(char* readFile, char* writeFile){
     double *ast;
     int *ist, *jst;
-    st_read(readFile, &ast, &ist, &jst);
+    int n_row, n_col, n_val;
+    st_read(readFile, &ast, &ist, &jst, &n_row,  &n_col, &n_val);
     int lda, ndiag;
     int* idiag;
     double* val_dia;
-    st_write (writeFile, m, n, n_val, ist, jst, ast, "  The matrix in ST format:" );
-    dpre_usconv_st2dia(m, n, ast, n_val, ist, jst, &lda, &ndiag, &idiag, &val_dia);
+    st_write (writeFile, n_row, n_col, n_val, ist, jst, ast, "  The matrix in ST format:" );
+    dpre_usconv_st2dia(n_row, n_col, ast, n_val, ist, jst, &lda, &ndiag, &idiag, &val_dia);
     dia_write(writeFile, val_dia, idiag, lda, ndiag);
 }
