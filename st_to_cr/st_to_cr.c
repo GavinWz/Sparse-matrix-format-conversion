@@ -79,4 +79,16 @@ void cr_write(char* filename,cr_fmt cr){
     return;
 }
 
+void st_to_cr_run(char* ifilename, char* ofilename){
+    st_fmt st;
+    int n_row;
+    int n_col;
+    int max;
+    st_read(ifilename, &st, &n_row, &n_col);
+    
+    cr_fmt cr;
 
+    st_to_cr(st, &cr, n_row);
+    st_write (ofilename, st);
+    cr_write(ofilename, cr);
+}

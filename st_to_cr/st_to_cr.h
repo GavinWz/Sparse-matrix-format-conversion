@@ -22,3 +22,5 @@ void st_write(char* filename,st_fmt st);
 void cr_write(char* filename,cr_fmt cr);
 
 void st_to_cr(st_fmt st, cr_fmt* cr, int n_row);
+
+void st_to_cr_run(char* ifilename, char* ofilename);
