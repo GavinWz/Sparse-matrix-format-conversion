@@ -12,6 +12,7 @@ void cc_read(char* filename, cc_fmt* cc, int* row){
     for(int i = 0; i < n_val; i++){
         if(i <= n_row){
             fscanf(file, "%d%lf%d", &(*cc).rcc[i], &(*cc).vcc[i], &(*cc).ccc[i]);
+
         }
         else
         {
@@ -33,8 +34,8 @@ void cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
         
         if(i == cc.ccc[index])
             index++;
-        (*st).ist[i] = index-1;
-        (*st).jst[i] = cc.rcc[i];
+        (*st).jst[i] = index-1;
+        (*st).ist[i] = cc.rcc[i];
         (*st).ast[i] = cc.vcc[i];
     }
     (*st).n_val = cc.ccc[n_row];
@@ -63,7 +64,7 @@ void cc_write(char* filename,cc_fmt cc){
     fprintf (file, "  The matrix in cc format:\n" );
     fprintf (file, "   Row    Col    Value \n" );
     fprintf (file, "   ----   ----   ----  \n" );
-   
+    
     for ( k = 0; k < cc.ccc[cc.n_row]; k++ )
     {
         
@@ -92,8 +93,8 @@ void cc_to_st_run(char* ifilename, char* ofilename){
     //     }
     // }
     st_fmt st;
-    
-    cc_to_st(cc, &st, n_row);
     cc_write(ofilename, cc);
+    cc_to_st(cc, &st, n_row);
+    
     st_write(ofilename, st);
 }
