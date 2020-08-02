@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "dia_to_st.h"
 
 void dia_read(char* filename, dia_fmt* dia){
@@ -22,7 +20,7 @@ void dia_read(char* filename, dia_fmt* dia){
             j++;
         }
     }
-
+    fclose(file);
 }
 
 void dia_to_st(dia_fmt dia, st_fmt* st){
@@ -53,14 +51,16 @@ void dia_to_st(dia_fmt dia, st_fmt* st){
         }
         (*st).n_val = index;
     }
+    
 }   
 
 void dia_write(char* filename, dia_fmt dia){
-    FILE* file = fopen(filename, "w+");
+    FILE* file = fopen(filename, "w");
     if(!file){
-        printf("Can not open the output file.");
+        fprintf(file, "Can not open the output file.");
         return;
     }
+    fprintf(file, "The DIA martrix is: \n");
     for(int i = 0; i < dia.ndiag; i++){
         fprintf(file, "%4d: ", dia.idiag[i]);
         for(int j = 0; j < dia.ldiag; j++){
@@ -68,10 +68,11 @@ void dia_write(char* filename, dia_fmt dia){
         }
         fprintf(file, "\n");
     }
+    fclose(file);
 }
 
 void st_write(char* filename,st_fmt st){
-    FILE* file = fopen(filename, "w+");
+    FILE* file = fopen(filename, "a");
     int k;
     fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
     fprintf (file, "  The matrix in ST format:\n" );
@@ -86,7 +87,7 @@ void st_write(char* filename,st_fmt st){
     return;
 }
 
-int main(){
+void dia_to_st_run(){
     dia_fmt dia;
     dia_read("input.txt", &dia);
     st_fmt st;

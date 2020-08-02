@@ -1,3 +1,6 @@
+#include<stdio.h>
+#include<stdlib.h>
+
 typedef struct dia{
     int ldiag;  //对角线长度
     int ndiag;  //对角线个数
@@ -12,3 +15,13 @@ typedef struct st{
     double *ast;
     int n_val;
 } st_fmt;
+
+void dia_read(char* filename, dia_fmt* dia);
+
+void dia_to_st(dia_fmt dia, st_fmt* st);
+
+void dia_write(char* filename, dia_fmt dia);
+
+void st_write(char* filename,st_fmt st);
+
+void dia_to_st_run();
