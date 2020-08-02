@@ -85,7 +85,7 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
 // }
 
 void st_write(char* filename,st_fmt st){
-    FILE* file = fopen(filename, "a");
+    FILE* file = fopen(filename, "w+");
     int k;
     fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
     fprintf (file, "  The matrix in ST format:\n" );
@@ -125,9 +125,9 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
     }
     fprintf(file, "\n\tST Martrix: \n\t");
     fprintf(file, "I         J         A         \n\t");
-    fprintf(file, "------------------------------\n\t");
+    fprintf(file, "------------------------------\n");
     for(int i = 0; i < hyb.n_val; i++){
-        fprintf(file, "%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
+        fprintf(file, "\t%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
     }
     fclose(file);
 }

@@ -22,18 +22,36 @@ void st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
     fclose(file);
 }
 
+void st_cc_sort(st_fmt* st){
+    for(int i = 0; i < st->n_val - 1; i++){
+        for(int j = 0; j < st->n_val - 1 - i; j++){
+            if(st->jst[j] > st->jst[j+1]){
+                int temp = st->ist[j];
+                st->ist[j] = st->ist[j+1];
+                st->ist[j+1] = temp;
+                temp = st->jst[j];
+                st->jst[j] = st->jst[j+1];
+                st->jst[j+1] = temp;
+                double temp1 = st->ast[j];
+                st->ast[j] = st->ast[j+1];
+                st->ast[j+1] = temp1;
+            }
+        }
+    }
+}
+
 void st_to_cc(st_fmt st, cc_fmt* cc, int n_row){
     int index = 1;
-    int tag = st.ist[0];
+    int tag = st.jst[0];
     (*cc).ccc = (int*)malloc(sizeof(int) * n_row + 1);
     (*cc).rcc = (int*)malloc(sizeof(int) * st.n_val);
     (*cc).vcc = (double*)malloc(sizeof(double) * st.n_val);
     (*cc).ccc[0] = 0;
     for(int i = 0; i < st.n_val; i++){
-        (*cc).rcc[i] = st.jst[i];
+        (*cc).rcc[i] = st.ist[i];
         (*cc).vcc[i] = st.ast[i];
-        if(st.ist[i] != tag){
-            tag = st.ist[i];
+        if(st.jst[i] != tag){
+            tag = st.jst[i];
             (*cc).ccc[index] = i;
             index++;
         }
@@ -86,10 +104,11 @@ void st_to_cc_run(char* ifilename, char* ofilename){
     int n_col;
     int max;
     st_read(ifilename, &st, &n_row, &n_col);
-    
+    st_write (ofilename, st);
+    st_cc_sort(&st);
     cc_fmt cc;
 
     st_to_cc(st, &cc, n_row);
-    st_write (ofilename, st);
+    
     cc_write(ofilename, cc);
 }

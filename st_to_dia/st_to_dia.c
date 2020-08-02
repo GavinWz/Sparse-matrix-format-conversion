@@ -111,9 +111,9 @@ void dia_write(char* filename, double *val, int *indx, int lda, int ndiag){
     int i, j;
     fprintf(file, "\nDIA Matrix:\n");
     for(i = 0; i < ndiag; i++){
-        fprintf(file, "%3d:\t", indx[i]);
-        for(j = i * lda+1; j <= (i+1) * lda; j++){
-            fprintf(file, "%lf\t", val[j]);
+        fprintf(file, "%3d:    ", indx[i]);
+        for(j = i * lda; j < (i+1) * lda; j++){
+            fprintf(file, "%lf    ", val[j]);
         }
         fprintf(file, "\n");
     }

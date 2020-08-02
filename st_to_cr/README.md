@@ -17,7 +17,7 @@ make
 
 ## 主要文件
 
-* read.txt: 存储ST格式稀疏矩阵的文件, 用于程序读取
+* input.txt: 存储ST格式稀疏矩阵的文件, 用于程序读取
 * output.txt: 存储程序运行结果
 * st_to_cr.c: 功能函数的实现
 * st_to_cr_test.c: 测试

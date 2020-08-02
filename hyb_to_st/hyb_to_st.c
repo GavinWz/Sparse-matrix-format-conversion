@@ -12,6 +12,10 @@ int hyb_read(char* filename, hyb_fmt *hyb){
         return 1;
     }
     fscanf(file, "%d%d%d", &n_row, &n_col, &(*hyb).max);
+    if((*hyb).max < 1){
+        printf("The max limit per row must be greater than 0.\n");
+        return 1;
+    }
 
     (*hyb).offset = (int**)malloc(sizeof(int)*n_col*(*hyb).max);
     (*hyb).eData = (double**)malloc(sizeof(double)*n_col*(*hyb).max);
@@ -105,9 +109,9 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
     }
     fprintf(file, "\n\tST Martrix: \n\t");
     fprintf(file, "I         J         V         \n\t");
-    fprintf(file, "------------------------------\n\t");
+    fprintf(file, "------------------------------\n");
     for(int i = 0; i < hyb.n_val; i++){
-        fprintf(file, "%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
+        fprintf(file, "\t%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
     }
     fclose(file);
 }

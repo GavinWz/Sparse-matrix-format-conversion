@@ -22,6 +22,37 @@ void st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
     fclose(file);
 }
 
+void st_cr_sort(st_fmt* st, int left, int right){
+    if(left >= right)
+        return;
+    int i = left, j = right;
+    int i_key = st->ist[i];
+    int j_key = st->jst[i];
+    double a_key = st->ast[i];
+    while(i < j){
+        while(i < j && i_key <= st->ist[j])
+            j--;
+        if(i < j){
+            st->ist[i] = st->ist[j];
+            st->jst[i] = st->jst[j];
+            st->ast[i] = st->ast[j];
+        }
+        while(i < j && i_key >= st->ist[i])
+            i++;
+        if(i < j){
+            st->ist[j] = st->ist[i];
+            st->jst[j] = st->jst[i];
+            st->ast[j] = st->ast[i];
+        }
+        
+    }
+    st->ist[i] = i_key;
+    st->jst[i] = j_key;
+    st->ast[i] = a_key;
+    st_cr_sort(st, left, i - 1);
+    st_cr_sort(st, i + 1, right);
+}
+
 void st_to_cr(st_fmt st, cr_fmt* cr, int n_row){
     int index = 1;
     int tag = st.ist[0];
@@ -47,8 +78,8 @@ void st_write(char* filename,st_fmt st){
     int k;
     fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
     fprintf (file, "  The matrix in ST format:\n" );
-    fprintf (file, "     #     I     J       A\n" );
-    fprintf (file, "  ----  ----  ----  --------------\n" );
+    fprintf (file, "     I     J       A\n" );
+    fprintf (file, "  ----  ----  --------------\n" );
     fprintf (file, "\n" );
     for ( k = 0; k < st.n_val; k++ )
     {
@@ -85,7 +116,12 @@ void st_to_cr_run(char* ifilename, char* ofilename){
     int n_col;
     int max;
     st_read(ifilename, &st, &n_row, &n_col);
-    
+    // st_write (ofilename, st);
+    // printf("\n\n");
+
+    st_cr_sort(&st, 0, st.n_val-1);
+
+    // st_cr_sort(&st);
     cr_fmt cr;
 
     st_to_cr(st, &cr, n_row);

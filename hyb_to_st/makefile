@@ -1,5 +1,5 @@
-#CC = gcc
-CC = cl
+CC = gcc
+#CC = cl
 
 hyb_to_st: hyb_to_st_test.c hyb_to_st.obj
 	$(CC) hyb_to_st_test.c hyb_to_st.obj -o hyb_to_st
