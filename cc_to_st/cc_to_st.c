@@ -53,11 +53,10 @@ clock_t st_write(char* filename,st_fmt st){
     clock_t begin = clock();
     FILE* file = fopen(filename, "a");
     int k;
-    fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
-    fprintf (file, "  The matrix in ST format:\n" );
-    fprintf (file, "     I     J       A\n" );
-    fprintf (file, "  ----  ----  --------------\n" );
-    fprintf (file, "\n" );
+    fprintf (file, "\nThe matrix in ST format:\n");
+    fprintf (file, "  Number of non-zero elements: %d\n", st.n_val );
+    fprintf (file, "\n   Rows  Cols   Values\n" );
+    fprintf (file, "   ----  ----  --------------\n" );
     for ( k = 0; k < st.n_val; k++ )
     {
         fprintf (file, "  %4d  %4d  %10.5lf\n", st.ist[k], st.jst[k], st.ast[k] );
@@ -73,8 +72,8 @@ clock_t cc_write(char* filename,cc_fmt cc){
     int k;
     fprintf (file, "\nCC: sparse triplet, Row, Col, Value.\n" );
     fprintf (file, "  The matrix in cc format:\n" );
-    fprintf (file, "   Row    Col    Value \n" );
-    fprintf (file, "   ----   ----   ----  \n" );
+    fprintf (file, "   Rows   Cols   Values \n" );
+    fprintf (file, "   ----   ----   ------  \n" );
     
     for ( k = 0; k < cc.ccc[cc.n_col]; k++ )
     {
