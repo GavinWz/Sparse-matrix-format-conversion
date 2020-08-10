@@ -27,3 +27,11 @@ ST: sparse triplet,    I, J,  A.
      2     2     3.00000
      2     3     9.00000
      3     3     4.00000
+
+------------------------------------
+-------------Time Sheet-------------
+Data Read:		0 ms
+Format Conversion:	0 ms
+CC Write:		2 ms
+ST Write:		2 ms
+------------------------------------

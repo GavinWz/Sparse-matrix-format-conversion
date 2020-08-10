@@ -1,7 +1,13 @@
 #include"cc_to_st.h"
 
-void cc_read(char* filename, cc_fmt* cc, int* row){
-    FILE* file = fopen("input.txt", "r");
+
+clock_t cc_read(char* filename, cc_fmt* cc, int* row){
+    clock_t begin = clock();
+    FILE* file = fopen(filename, "r");
+    if(file == NULL){
+        printf("Can't open the input file.\n");
+        return -1;
+    }
     int n_row, n_col, n_val;
     fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
     (*row) = n_row;
@@ -19,10 +25,14 @@ void cc_read(char* filename, cc_fmt* cc, int* row){
             fscanf(file, "%d%lf", &(*cc).rcc[i], &(*cc).vcc[i]);
         }
     }
+    fclose(file);
     (*cc).n_row = n_row;
+    clock_t end = clock();
+    return end - begin;
 }
 
-void cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
+clock_t cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
+    clock_t begin = clock();
     int index = 1;
     int n_val = cc.ccc[n_row];  //rcc[n_row]记录非零元个数
     (*st).ist = (int*)malloc(sizeof(int) * n_val);
@@ -39,9 +49,12 @@ void cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
         (*st).ast[i] = cc.vcc[i];
     }
     (*st).n_val = cc.ccc[n_row];
+    clock_t end = clock();
+    return end - begin;
 }
 
-void st_write(char* filename,st_fmt st){
+clock_t st_write(char* filename,st_fmt st){
+    clock_t begin = clock();
     FILE* file = fopen(filename, "a");
     int k;
     fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
@@ -54,10 +67,12 @@ void st_write(char* filename,st_fmt st){
         fprintf (file, "  %4d  %4d  %10.5lf\n", st.ist[k], st.jst[k], st.ast[k] );
     }
     fclose(file);
-    return;
+    clock_t end = clock();
+    return end - begin;
 }
 
-void cc_write(char* filename,cc_fmt cc){
+clock_t cc_write(char* filename,cc_fmt cc){
+    clock_t begin = clock();
     FILE* file = fopen(filename, "w+");
     int k;
     fprintf (file, "\ncc: sparse triplet, Row, Col, Value.\n" );
@@ -76,25 +91,34 @@ void cc_write(char* filename,cc_fmt cc){
             
     }
     fclose(file);
-    return;
+    clock_t end = clock();
+    return end - begin;
+}
+
+void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write_t1, clock_t write_t2){
+    FILE* file = fopen(filename, "a");
+    fprintf(file, "\n------------------------------------\n");
+    fprintf(file, "-------------Time Sheet-------------\n");
+    if(read_t == -1){
+        fprintf(file, "Input file opening failed\n");
+        fprintf(file, "\n------------------------------------\n");
+        return;
+    }
+    fprintf(file, "Data Read:\t\t%ld ms\n", read_t);
+    fprintf(file, "Format Conversion:\t%ld ms\n", convert_t);
+    fprintf(file, "CC Write:\t\t%ld ms\n", write_t1);
+    fprintf(file, "ST Write:\t\t%ld ms\n", write_t2);
+    fprintf(file, "------------------------------------\n");
 }
 
 void cc_to_st_run(char* ifilename, char* ofilename){
     cc_fmt cc;
     int n_row;
-    cc_read(ifilename, &cc, &n_row);
-    // for(int i = 0; i < cc.ccc[n_row]; i++){
-    //     printf("%d %lf ", cc.rcc[i], cc.vcc[i]);
-    //     if(i < n_row)
-    //         printf("%d\n", cc.ccc[i]);
-    //     else
-    //     {
-    //         printf("\n");
-    //     }
-    // }
+    clock_t cc_read_t, cc_write_t, st_write_t, convert_t;
+    cc_read_t = cc_read(ifilename, &cc, &n_row);
     st_fmt st;
-    cc_write(ofilename, cc);
-    cc_to_st(cc, &st, n_row);
-    
-    st_write(ofilename, st);
+    cc_write_t = cc_write(ofilename, cc);
+    convert_t = cc_to_st(cc, &st, n_row);
+    st_write_t = st_write(ofilename, st);
+    time_write(ofilename, cc_read_t, convert_t, cc_write_t, st_write_t);
 }
