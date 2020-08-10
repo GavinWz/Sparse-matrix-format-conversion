@@ -1,6 +1,6 @@
 #include"cc_to_st.h"
 
-clock_t cc_read(char* filename, cc_fmt* cc, int* row){
+clock_t cc_read(char* filename, cc_fmt* cc){
     clock_t begin = clock();
     FILE* file = fopen("input.txt", "r");
     if(file == NULL){
@@ -9,7 +9,6 @@ clock_t cc_read(char* filename, cc_fmt* cc, int* row){
     }
     int n_row, n_col, n_val;
     fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
-    (*row) = n_row;
     (*cc).rcc = (int*) malloc(sizeof(int) * n_val);
     (*cc).ccc = (int*) malloc(sizeof(int) * (n_col + 1));
     (*cc).vcc = (double*) malloc(sizeof(double) * n_val);
@@ -29,7 +28,7 @@ clock_t cc_read(char* filename, cc_fmt* cc, int* row){
     return end - begin;
 }
 
-clock_t cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
+clock_t cc_to_st(cc_fmt cc, st_fmt* st){
     clock_t begin = clock();
     int index = 1;
     int n_val = cc.ccc[cc.n_col];  //ccc[n_col]记录非零元个数
@@ -72,7 +71,7 @@ clock_t cc_write(char* filename,cc_fmt cc){
     clock_t begin = clock();
     FILE* file = fopen(filename, "w+");
     int k;
-    fprintf (file, "\ncc: sparse triplet, Row, Col, Value.\n" );
+    fprintf (file, "\nCC: sparse triplet, Row, Col, Value.\n" );
     fprintf (file, "  The matrix in cc format:\n" );
     fprintf (file, "   Row    Col    Value \n" );
     fprintf (file, "   ----   ----   ----  \n" );
@@ -110,12 +109,11 @@ void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write
 
 void cc_to_st_run(char* ifilename, char* ofilename){
     cc_fmt cc;
-    int n_row;
     clock_t cc_read_t, cc_write_t, st_write_t, convert_t;
-    cc_read_t = cc_read(ifilename, &cc, &n_row);
+    cc_read_t = cc_read(ifilename, &cc);
     st_fmt st;
     cc_write_t = cc_write(ofilename, cc);
-    convert_t = cc_to_st(cc, &st, n_row);
+    convert_t = cc_to_st(cc, &st);
     st_write_t = st_write(ofilename, st);
     time_write(ofilename, cc_read_t, convert_t, cc_write_t, st_write_t);
 }
