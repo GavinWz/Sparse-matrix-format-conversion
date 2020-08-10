@@ -3,7 +3,7 @@ cc: sparse triplet, Row, Col, Value.
   The matrix in cc format:
    Row    Col    Value 
    ----   ----   ----  
-     0     3     1.00000
+     0     0     1.00000
      2     2     5.00000
      0     5     7.00000
      1     7     2.00000
