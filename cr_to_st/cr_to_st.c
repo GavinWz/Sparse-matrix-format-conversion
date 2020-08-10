@@ -2,6 +2,10 @@
 
 void cr_read(char* filename, cr_fmt* cr, int* row){
     FILE* file = fopen("input.txt", "r");
+    if(file == NULL){
+        printf("Can't open the file.\n");
+        return 1;
+    }
     int n_row, n_col, n_val;
     fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
     (*row) = n_row;

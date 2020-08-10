@@ -4,8 +4,11 @@ void dia_read(char* filename, dia_fmt* dia){
     int i = 0, j = 0;
     (*dia).n_val = 0;
     FILE* file = fopen(filename, "r");
+    if(file == NULL){
+        printf("Can't open the file.\n");
+        return;
+    }
     fscanf(file, "%d%d", &(*dia).ndiag, &(*dia).ldiag);
-
     (*dia).idiag = (int*)malloc(sizeof(int) * (*dia).ndiag);
     (*dia).val_dia = (double*)malloc(sizeof(double) * (*dia).ldiag * (*dia).ndiag);
    
