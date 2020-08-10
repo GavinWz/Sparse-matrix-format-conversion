@@ -1,12 +1,7 @@
-# include <stdlib.h>
-# include <stdio.h>
-# include <math.h>
-# include <time.h>
-# include <string.h>
 #include "st_to_dia.h"
 
-void dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia)
-{
+clock_t dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia){
+  clock_t begin = clock();
   dia->ndiag=0;
   dia->ldiag=m<n?m:n;
   int num_rows,num_cols,num_nonzeros;
@@ -58,13 +53,16 @@ void dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia)
   free(diag_offset);
   dia->val_dia=VAL_DIA;  //Take the result out of the function
   dia->idiag=IDIAG;
+  clock_t end = clock();
+  return end - begin;
 }
 
-void st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
+clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
+    clock_t begin = clock();
     FILE *file = fopen(filename, "r");
     if(file == NULL){
         printf("Can't open the input file.\n");
-        return;
+        return -1;
     }
     int n_val;
     fscanf(file, "%d%d%d", &(*n_row), &(*n_col), &n_val);
@@ -80,32 +78,36 @@ void st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
     }
     (*st).n_val = n_val;
     fclose(file);
+    clock_t end = clock();
+    return end - begin;
+    
 }
 
-void st_write(char* filename,st_fmt st){
+clock_t st_write(char* filename,st_fmt st){
+    clock_t begin = clock();
     FILE* file = fopen(filename, "w+");
     int k;
-    fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
-    fprintf (file, "  The matrix in ST format:\n" );
-    fprintf (file, "     #     I     J       A\n" );
-    fprintf (file, "  ----  ----  ----  --------------\n" );
-    fprintf (file, "\n" );
+    fprintf (file, "\nThe matrix in ST format:\n");
+    fprintf (file, "  Number of non-zero elements: %d\n", st.n_val );
+    fprintf (file, "\n   Rows  Cols   Values\n" );
+    fprintf (file, "   ----  ----  --------------\n" );
     for ( k = 0; k < st.n_val; k++ )
     {
         fprintf (file, "  %4d  %4d  %10.5lf\n", st.ist[k], st.jst[k], st.ast[k] );
     }
-    fprintf (file, "\n" );
     fclose(file);
-    return;
+    clock_t end = clock();
+    return end - begin;
 }
 
-void dia_write(char* filename, dia_fmt dia){
+clock_t dia_write(char* filename, dia_fmt dia){
+    clock_t begin = clock();
     FILE* file = fopen(filename, "a");
-    if(!file){
-        fprintf(file, "Can not open the output file.");
-        return;
-    }
-    fprintf(file, "\nThe DIA martrix is: \n");
+    
+    fprintf(file, "\nThe DIA martrix: \n");
+    fprintf(file, "  Number of diagonals: %d\n", dia.ndiag);
+    fprintf(file, "  Length of diagonals: %d\n\n", dia.ldiag);
+    fprintf(file, "  Values:\n");
     for(int i = 0; i < dia.ndiag; i++){
         fprintf(file, "%4d: ", dia.idiag[i]);
         for(int j = 0; j < dia.ldiag; j++){
@@ -114,17 +116,37 @@ void dia_write(char* filename, dia_fmt dia){
         fprintf(file, "\n");
     }
     fclose(file);
+    clock_t end = clock();
+    return end - begin;
 }
 
-void st_to_dia_run(char* readFile, char* writeFile){
+void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write_t1, clock_t write_t2){
+    FILE* file = fopen(filename, "a");
+    fprintf(file, "\n------------------------------------\n");
+    fprintf(file, "-------------Time Sheet-------------\n");
+    if(read_t == -1){
+        fprintf(file, "Input file opening failed\n");
+        fprintf(file, "\n------------------------------------\n");
+        return;
+    }
+    fprintf(file, "Data Read:\t\t%ld ms\n", read_t);
+    fprintf(file, "Format Conversion:\t%ld ms\n", convert_t);
+    fprintf(file, "CC Write:\t\t%ld ms\n", write_t1);
+    fprintf(file, "ST Write:\t\t%ld ms\n", write_t2);
+    fprintf(file, "------------------------------------\n");
+}
+
+void st_to_dia_run(char* ifilename, char* ofilename){
     double *ast;
     int *ist, *jst;
     int n_row, n_col, n_val;
-
     st_fmt st;
     dia_fmt dia;
-    st_read(readFile, &st, &n_row, &n_col);
-    dpre_usconv_st2dia(n_row, n_col, st, &dia);
-    st_write(writeFile,st);
-    dia_write(writeFile, dia);
+    clock_t st_read_t, dia_write_t, st_write_t, convert_t;
+
+    st_read_t = st_read(ifilename, &st, &n_row, &n_col);
+    convert_t = dpre_usconv_st2dia(n_row, n_col, st, &dia);
+    st_write_t = st_write(ofilename,st);
+    dia_write_t = dia_write(ofilename, dia);
+    time_write(ofilename, st_read_t, convert_t, dia_write_t, st_write_t);
 }

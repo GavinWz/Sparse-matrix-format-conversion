@@ -1,3 +1,9 @@
+# include <stdlib.h>
+# include <stdio.h>
+# include <math.h>
+#include<string.h>
+# include <time.h>
+
 typedef struct dia{
     int ldiag;  //对角线长度
     int ndiag;  //对角线个数
@@ -13,12 +19,12 @@ typedef struct st{
     int n_val;
 } st_fmt;
 
-void dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia);
+clock_t dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia);
 
-void st_read(char* filename, st_fmt* st, int* n_row, int* n_col);
+clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col);
 
-void st_write(char* filename,st_fmt st);
+clock_t st_write(char* filename,st_fmt st);
 
-void dia_write(char* filename, dia_fmt dia);
+clock_t dia_write(char* filename, dia_fmt dia);
 
 void st_to_dia_run(char* readFile, char* writeFile);

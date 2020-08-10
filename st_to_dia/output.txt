@@ -1,9 +1,9 @@
 
-ST: sparse triplet,    I, J,  A.
-  The matrix in ST format:
-     #     I     J       A
-  ----  ----  ----  --------------
+The matrix in ST format:
+  Number of non-zero elements: 9
 
+   Rows  Cols   Values
+   ----  ----  --------------
      0     0     1.00000
      0     1     7.00000
      1     1     2.00000
@@ -14,8 +14,19 @@ ST: sparse triplet,    I, J,  A.
      3     1     6.00000
      3     3     4.00000
 
+The DIA martrix: 
+  Number of diagonals: 3
+  Length of diagonals: 4
 
-The DIA martrix is: 
+  Values:
    0: 1.000000 2.000000 3.000000 4.000000 
    1: 7.000000 8.000000 9.000000 0.000000 
   -2: 0.000000 0.000000 5.000000 6.000000 
+
+------------------------------------
+-------------Time Sheet-------------
+Data Read:		0 ms
+Format Conversion:	0 ms
+CC Write:		2 ms
+ST Write:		2 ms
+------------------------------------
