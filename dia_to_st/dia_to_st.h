@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<time.h>
 
 typedef struct dia{
     int ldiag;  //对角线长度
@@ -16,12 +17,12 @@ typedef struct st{
     int n_val;
 } st_fmt;
 
-void dia_read(char* filename, dia_fmt* dia);
+clock_t dia_read(char* filename, dia_fmt* dia);
 
-void dia_to_st(dia_fmt dia, st_fmt* st);
+clock_t dia_to_st(dia_fmt dia, st_fmt* st);
 
-void dia_write(char* filename, dia_fmt dia);
+clock_t dia_write(char* filename, dia_fmt dia);
 
-void st_write(char* filename,st_fmt st);
+clock_t st_write(char* filename,st_fmt st);
 
-void dia_to_st_run();
+void dia_to_st_run(char* ifilename, char* ofilename);

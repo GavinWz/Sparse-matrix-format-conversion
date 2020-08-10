@@ -1,4 +1,8 @@
-The DIA martrix is: 
+The DIA martrix: 
+  Number of diagonals: 6
+  Length of diagonals: 5
+
+  Values:
    0: 1.000000 7.000000 2.000000 8.000000 5.000000 
    3: 9.000000 2.000000 0.000000 0.000000 0.000000 
   -1: 0.000000 5.000000 6.000000 0.000000 7.000000 
@@ -6,11 +10,11 @@ The DIA martrix is:
    2: 0.000000 0.000000 7.000000 0.000000 0.000000 
   -4: 0.000000 0.000000 0.000000 0.000000 1.000000 
 
-ST: sparse triplet,    I, J,  A.
-  The matrix in ST format:
-     #     I     J       A
-  ----  ----  ----  --------------
+The matrix in ST format:
+  Number of non-zero elements: 15
 
+   Rows  Cols   Values
+   ----  ----  --------------
      0     0     1.00000
      1     1     7.00000
      2     2     2.00000
@@ -26,3 +30,11 @@ ST: sparse triplet,    I, J,  A.
      4     2     2.00000
      2     4     7.00000
      4     0     1.00000
+
+------------------------------------
+-------------Time Sheet-------------
+Data Read:		1 ms
+Format Conversion:	0 ms
+CC Write:		2 ms
+ST Write:		2 ms
+------------------------------------
