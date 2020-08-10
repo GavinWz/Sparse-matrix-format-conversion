@@ -1,20 +1,7 @@
-
-ST: sparse triplet,    I, J,  A.
-  The matrix in ST format:
-     #     I     J       A
-  ----  ----  ----  --------------
-
-     0     0     0           1
-     1     1     1           2
-     2     1     2           8
-     3     2     0           5
-     4     2     2           3
-     5     2     3           9
-     6     3     1           6
-     7     3     3           4
+Convert a sparse matrix from HYB to ST format.
 
 ------------------------------
-The final HYB format martrix: 
+The original HYB format martrix: 
 
 	ELL Column indices: 
 	0         -1        
@@ -29,6 +16,14 @@ The final HYB format martrix:
 	6.0000    4.0000    
 	
 	ST Martrix: 
-	I         J         A         
+	I         J         V         
 	------------------------------
 	2         3         9.0000    
+
+------------------------------------
+-------------Time Sheet-------------
+Data Read:		0 ms
+Format Conversion:	0 ms
+CC Write:		2 ms
+ST Write:		2 ms
+------------------------------------

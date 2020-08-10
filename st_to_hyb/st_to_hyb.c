@@ -1,16 +1,18 @@
-#include<stdio.h>
-#include<stdlib.h>
 #include"st_to_hyb.h"
 
-void st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max){
+clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max){
+    clock_t begin = clock();
     FILE *file = fopen(filename, "r");
     if(file == NULL){
         printf("Can't open the input file.\n");
-        return;
+        return -1;
     }
     int n_val;
     fscanf(file, "%d%d%d%d", &(*n_row), &(*n_col), &n_val, &(*max));
-    
+    if((*max) < 1){
+        printf("The max limit per row must be greater than 0.\n");
+        return -2;
+    }
     (*st).ast = (double*)malloc(sizeof(double) * n_val);
     (*st).ist = (int*)malloc(sizeof(int) * n_val);
     (*st).jst = (int*)malloc(sizeof(int) * n_val);
@@ -22,9 +24,12 @@ void st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max){
     }
     (*st).n_val = n_val;
     fclose(file);
+    clock_t end = clock();
+    return end - begin;
 }
 
-void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
+clock_t st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
+    clock_t begin = clock();
     (*hyb).ist = (int*)malloc(sizeof(int) * (n_col - (*hyb).max));
     (*hyb).jst = (int*)malloc(sizeof(int) * (n_col - (*hyb).max));
     (*hyb).ast = (double*)malloc(sizeof(double) * (n_col - (*hyb).max));
@@ -43,7 +48,6 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
         else{
             index = st.ist[i];
             while(j_index < (*hyb).max){
-                // printf("%d\t%d\n",st.ist[i], j_index);
                 *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = -1;
                 j_index++;
             }
@@ -51,7 +55,6 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
             j_index = 0;
         }
         if(cnt <= (*hyb).max){
-            
             *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = st.jst[i];
             *((double*)(*hyb).eData+st.ist[i]*(*hyb).max+j_index) = st.ast[i];
             j_index++;
@@ -63,51 +66,34 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
             (*hyb).n_val++;
         }
     }
+    clock_t end = clock();
+    return end - begin;
 }
 
-// void st_write(char* filename,  int m, int n, int nst, int ist[], int jst[], double ast[], 
-//   char *title ){
-//     FILE* file = fopen(filename, "w+");
-//     fprintf (file, " Convert a sparse matrix from ST to DIA format.\n" );
-//     fprintf (file, " ST: sparse triplet,    I, J,  A.\n" );
-//     int k;
-//     fprintf (file, "\n" );
-//     fprintf (file, "%s\n", title );
-//     fprintf (file, "     #     I     J       A\n" );
-//     fprintf (file, "  ----  ----  ----  --------------\n" );
-//     fprintf (file, "\n" );
-//     for ( k = 0; k < nst; k++ )
-//     {
-//         fprintf (file, "  %4d  %4d  %4d  %10.8g\n", k, ist[k], jst[k], ast[k] );
-//     }
-//     fclose(file);
-//     return;
-// }
-
-void st_write(char* filename,st_fmt st){
+clock_t st_write(char* filename,st_fmt st){
+    clock_t begin = clock();
     FILE* file = fopen(filename, "w+");
     int k;
-    fprintf (file, "\nST: sparse triplet,    I, J,  A.\n" );
-    fprintf (file, "  The matrix in ST format:\n" );
-    fprintf (file, "     #     I     J       A\n" );
-    fprintf (file, "  ----  ----  ----  --------------\n" );
-    fprintf (file, "\n" );
+    fprintf (file, "\nThe matrix in ST format:\n");
+    fprintf (file, "  Number of non-zero elements: %d\n", st.n_val );
+    fprintf (file, "\n   Rows  Cols   Values\n" );
+    fprintf (file, "   ----  ----  --------------\n" );
     for ( k = 0; k < st.n_val; k++ )
     {
-        fprintf (file, "  %4d  %4d  %4d  %10.8g\n", k, st.ist[k], st.jst[k], st.ast[k] );
+        fprintf (file, "  %4d  %4d  %10.5lf\n", st.ist[k], st.jst[k], st.ast[k] );
     }
     fclose(file);
-    return;
+    clock_t end = clock();
+    return end - begin;
 }
 
-void hyb_write(char* filename, hyb_fmt hyb, int n_row){
-    FILE *file = fopen(filename, "a");
-    if(file == NULL){
-        printf("Can't open the file.\n");
-        return;
-    }
+clock_t hyb_write(char* filename, hyb_fmt hyb, int n_row){
+    clock_t begin = clock();
+    FILE *file = fopen(filename, "w+");
+    fprintf (file, "Convert a sparse matrix from HYB to ST format.\n" );
+ 
     fprintf(file, "\n------------------------------\n");
-    fprintf(file, "The final HYB format martrix: \n");
+    fprintf(file, "The original HYB format martrix: \n");
 
     fprintf(file, "\n\tELL Column indices: \n\t");
     for(int i = 0; i < n_row; i++){
@@ -124,12 +110,36 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row){
         fprintf(file, "\n\t");
     }
     fprintf(file, "\n\tST Martrix: \n\t");
-    fprintf(file, "I         J         A         \n\t");
+    fprintf(file, "I         J         V         \n\t");
     fprintf(file, "------------------------------\n");
     for(int i = 0; i < hyb.n_val; i++){
         fprintf(file, "\t%-10d%-10d%-10.4lf\n", hyb.ist[i],hyb.jst[i],hyb.ast[i]);
     }
     fclose(file);
+    clock_t end = clock();
+    return end - begin;
+}
+
+
+void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write_t1, clock_t write_t2){
+    FILE* file = fopen(filename, "a");
+    fprintf(file, "\n------------------------------------\n");
+    fprintf(file, "-------------Time Sheet-------------\n");
+    if(read_t == -1){
+        fprintf(file, "Input file opening failed\n");
+        fprintf(file, "\n------------------------------------\n");
+        return;
+    }
+    else if(read_t == -2){
+        fprintf(file, "The max limit per row must be greater than 0.\n");
+        fprintf(file, "\n------------------------------------\n");
+        return;
+    }
+    fprintf(file, "Data Read:\t\t%ld ms\n", read_t);
+    fprintf(file, "Format Conversion:\t%ld ms\n", convert_t);
+    fprintf(file, "CC Write:\t\t%ld ms\n", write_t1);
+    fprintf(file, "ST Write:\t\t%ld ms\n", write_t2);
+    fprintf(file, "------------------------------------\n");
 }
 
 void st_to_hyb_run(char* ifilename, char* ofilename){
@@ -137,12 +147,15 @@ void st_to_hyb_run(char* ifilename, char* ofilename){
     int n_row;
     int n_col;
     int max;
-    st_read(ifilename, &st, &n_row, &n_col, &max);
-    
     hyb_fmt hyb;
-    hyb.max = max;
+    
+    clock_t st_read_t, hyb_write_t, st_write_t, convert_t;
 
-    st_to_hyb(st, &hyb, n_row, n_row);
-    st_write (ofilename, st);
-    hyb_write(ofilename, hyb, n_row);
+    st_read_t = st_read(ifilename, &st, &n_row, &n_col, &max);
+    hyb.max = max;
+    convert_t = st_to_hyb(st, &hyb, n_row, n_row);
+    st_write_t = st_write (ofilename, st);
+    hyb_write_t = hyb_write(ofilename, hyb, n_row);
+
+    time_write(ofilename, st_read_t, convert_t, hyb_write_t, st_write_t);
 }
