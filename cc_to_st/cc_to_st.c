@@ -1,9 +1,8 @@
 #include"cc_to_st.h"
 
-
 clock_t cc_read(char* filename, cc_fmt* cc, int* row){
     clock_t begin = clock();
-    FILE* file = fopen(filename, "r");
+    FILE* file = fopen("input.txt", "r");
     if(file == NULL){
         printf("Can't open the input file.\n");
         return -1;
@@ -11,12 +10,11 @@ clock_t cc_read(char* filename, cc_fmt* cc, int* row){
     int n_row, n_col, n_val;
     fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
     (*row) = n_row;
-    (*cc).rcc = (int*) malloc(sizeof(int) * (n_row + 1));
-    (*cc).ccc = (int*) malloc(sizeof(int) * n_val);
+    (*cc).rcc = (int*) malloc(sizeof(int) * n_val);
+    (*cc).ccc = (int*) malloc(sizeof(int) * (n_col + 1));
     (*cc).vcc = (double*) malloc(sizeof(double) * n_val);
-    
     for(int i = 0; i < n_val; i++){
-        if(i <= n_row){
+        if(i <= n_col){
             fscanf(file, "%d%lf%d", &(*cc).rcc[i], &(*cc).vcc[i], &(*cc).ccc[i]);
 
         }
@@ -26,7 +24,7 @@ clock_t cc_read(char* filename, cc_fmt* cc, int* row){
         }
     }
     fclose(file);
-    (*cc).n_row = n_row;
+    (*cc).n_col = n_col;
     clock_t end = clock();
     return end - begin;
 }
@@ -34,11 +32,10 @@ clock_t cc_read(char* filename, cc_fmt* cc, int* row){
 clock_t cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
     clock_t begin = clock();
     int index = 1;
-    int n_val = cc.ccc[n_row];  //rcc[n_row]记录非零元个数
+    int n_val = cc.ccc[cc.n_col];  //ccc[n_col]记录非零元个数
     (*st).ist = (int*)malloc(sizeof(int) * n_val);
     (*st).jst = (int*)malloc(sizeof(int) * n_val);
     (*st).ast = (double*)malloc(sizeof(double) * n_val);
-   
     
     for(int i = 0; i < n_val; i++){  
         
@@ -48,7 +45,7 @@ clock_t cc_to_st(cc_fmt cc, st_fmt* st, int n_row){
         (*st).ist[i] = cc.rcc[i];
         (*st).ast[i] = cc.vcc[i];
     }
-    (*st).n_val = cc.ccc[n_row];
+    (*st).n_val = cc.ccc[cc.n_col];
     clock_t end = clock();
     return end - begin;
 }
@@ -80,10 +77,10 @@ clock_t cc_write(char* filename,cc_fmt cc){
     fprintf (file, "   Row    Col    Value \n" );
     fprintf (file, "   ----   ----   ----  \n" );
     
-    for ( k = 0; k < cc.ccc[cc.n_row]; k++ )
+    for ( k = 0; k < cc.ccc[cc.n_col]; k++ )
     {
         
-        if(k <= cc.n_row)
+        if(k <= cc.n_col)
             fprintf(file, "  %4d  %4d  %10.5lf\n", cc.rcc[k], cc.ccc[k], cc.vcc[k]);
             
         else

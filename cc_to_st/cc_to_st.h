@@ -13,7 +13,7 @@ typedef struct cc{
     int *rcc;
     int *ccc;
     double *vcc;
-    int n_row;
+    int n_col;
 } cc_fmt;
 
 void print_time(char* ofilename, char* message, long time);
