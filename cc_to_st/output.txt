@@ -20,11 +20,11 @@ CC: sparse triplet, Row, Col, Value.
      0           2.00000
      3           3.00000
 
-ST: sparse triplet,    I, J,  A.
-  The matrix in ST format:
-     I     J       A
-  ----  ----  --------------
+The matrix in ST format:
+  Number of non-zero elements: 16
 
+   Rows  Cols   Values
+   ----  ----  --------------
      1     0     3.00000
      2     0     3.00000
      3     0     2.00000
@@ -44,8 +44,8 @@ ST: sparse triplet,    I, J,  A.
 
 ------------------------------------
 -------------Time Sheet-------------
-Data Read:		1 ms
+Data Read:		0 ms
 Format Conversion:	0 ms
 CC Write:		2 ms
-ST Write:		2 ms
+ST Write:		5 ms
 ------------------------------------
