@@ -22,6 +22,24 @@ make
 * cr_to_st.c: 功能函数的实现
 * cr_to_st_test.c: 测试
 
+## 数据结构
+
+```c
+typedef struct st{
+    int *ist;   //行偏移数组
+    int *jst;   //列偏移数组
+    double *ast; //非零元数组
+    int n_val;  //非零元个数
+} st_fmt;
+
+typedef struct cr{
+    int *rcr;   //行偏移数组
+    int *ccr;   //列偏移数组
+    double *vcr;    //非零元数组
+    int n_row;  //原矩阵行数
+} cr_fmt;
+```
+
 ## 函数及参数含义
 1. cr_read
 ```c
