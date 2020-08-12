@@ -27,4 +27,6 @@ clock_t st_write(char* filename,st_fmt st);
 
 clock_t dia_write(char* filename, dia_fmt dia);
 
+void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write_t1, clock_t write_t2);
+
 void st_to_dia_run(char* readFile, char* writeFile);

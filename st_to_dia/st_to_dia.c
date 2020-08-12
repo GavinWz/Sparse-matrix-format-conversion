@@ -1,5 +1,31 @@
 #include "st_to_dia.h"
 
+clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
+    clock_t begin = clock();
+    FILE *file = fopen(filename, "r");
+    if(file == NULL){
+        printf("Can't open the input file.\n");
+        return -1;
+    }
+    int n_val;
+    fscanf(file, "%d%d%d", &(*n_row), &(*n_col), &n_val);
+    
+    (*st).ast = (double*)malloc(sizeof(double) * n_val);
+    (*st).ist = (int*)malloc(sizeof(int) * n_val);
+    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+    
+    int index = 0;
+    while(feof(file) == 0){
+        fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
+        index++;
+    }
+    (*st).n_val = n_val;
+    fclose(file);
+    clock_t end = clock();
+    return end - begin;
+    
+}
+
 clock_t dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia){
   clock_t begin = clock();
   dia->ndiag=0;
@@ -55,32 +81,6 @@ clock_t dpre_usconv_st2dia(int m, int n, st_fmt st, dia_fmt* dia){
   dia->idiag=IDIAG;
   clock_t end = clock();
   return end - begin;
-}
-
-clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
-    clock_t begin = clock();
-    FILE *file = fopen(filename, "r");
-    if(file == NULL){
-        printf("Can't open the input file.\n");
-        return -1;
-    }
-    int n_val;
-    fscanf(file, "%d%d%d", &(*n_row), &(*n_col), &n_val);
-    
-    (*st).ast = (double*)malloc(sizeof(double) * n_val);
-    (*st).ist = (int*)malloc(sizeof(int) * n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * n_val);
-    
-    int index = 0;
-    while(feof(file) == 0){
-        fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
-        index++;
-    }
-    (*st).n_val = n_val;
-    fclose(file);
-    clock_t end = clock();
-    return end - begin;
-    
 }
 
 clock_t st_write(char* filename,st_fmt st){
