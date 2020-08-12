@@ -29,18 +29,18 @@ void st_cc_sort(st_fmt* st, int left, int right){
     if(left >= right)
         return ;
     int i = left, j = right;
-    int i_key = st->ist[i];
-    int j_key = st->jst[i];
-    double a_key = st->ast[i];
+    int i_key = st->ist[i];     //保存基准值的行偏移
+    int j_key = st->jst[i];     //保存基准值的列偏移
+    double a_key = st->ast[i];  //保存基准值的非零元
     while(i < j){
-        while(i < j && i_key <= st->ist[j])
+        while(i < j && j_key <= st->jst[j])
             j--;
         if(i < j){
             st->ist[i] = st->ist[j];
             st->jst[i] = st->jst[j];
             st->ast[i] = st->ast[j];
         }
-        while(i < j && i_key >= st->ist[i])
+        while(i < j && j_key >= st->jst[i])
             i++;
         if(i < j){
             st->ist[j] = st->ist[i];
@@ -52,22 +52,22 @@ void st_cc_sort(st_fmt* st, int left, int right){
     st->ist[i] = i_key;
     st->jst[i] = j_key;
     st->ast[i] = a_key;
-    st_cr_sort(st, left, i - 1);
-    st_cr_sort(st, i + 1, right);
+    st_cc_sort(st, left, i - 1);
+    st_cc_sort(st, i + 1, right);
 }
 
 clock_t st_to_cc(st_fmt st, cc_fmt* cc, int n_row){
     clock_t begin = clock();
     int index = 1;
-    int tag = st.jst[0];
+    int tag = st.jst[0];    //记录当前列偏移值
     (*cc).ccc = (int*)malloc(sizeof(int) * n_row + 1);
     (*cc).rcc = (int*)malloc(sizeof(int) * st.n_val);
     (*cc).vcc = (double*)malloc(sizeof(double) * st.n_val);
     (*cc).ccc[0] = 0;
     for(int i = 0; i < st.n_val; i++){
-        (*cc).rcc[i] = st.ist[i];
+        (*cc).rcc[i] = st.ist[i];  //行偏移和非零元不变，直接赋值
         (*cc).vcc[i] = st.ast[i];
-        if(st.jst[i] != tag){
+        if(st.jst[i] != tag){   //在列偏移值发生变化时更新当前列偏移值
             tag = st.jst[i];
             (*cc).ccc[index] = i;
             index++;
@@ -146,7 +146,7 @@ void st_to_cc_run(char* ifilename, char* ofilename){
     st_read_t = st_read(ifilename, &st, &n_row, &n_col);
 
     clock_t begin = clock();
-    st_cr_sort(&st, 0, st.n_val-1);
+    st_cc_sort(&st, 0, st.n_val-1);
     clock_t end = clock();
     sort_t = end - begin;
 

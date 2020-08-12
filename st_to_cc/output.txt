@@ -4,9 +4,9 @@ The matrix in ST format:
 
    Rows  Cols   Values
    ----  ----  --------------
-     1     0     3.00000
-     2     0     3.00000
      3     0     2.00000
+     2     0     3.00000
+     1     0     3.00000
      0     1     1.00000
      1     1     1.00000
      2     1     4.00000
@@ -16,8 +16,8 @@ The matrix in ST format:
      1     3     1.00000
      2     3     6.00000
      0     4     1.00000
-     1     4     1.00000
      3     4     7.00000
+     1     4     1.00000
      0     5     2.00000
      3     5     3.00000
 
@@ -25,9 +25,9 @@ CC: sparse triplet, Row, Col, Value.
   The matrix in cc format:
    Rows   Cols   Values 
    ----   ----   ------  
-     1     0     3.00000
+     3     0     2.00000
      2     3     3.00000
-     3     7     2.00000
+     1     7     3.00000
      0     9     1.00000
      1    11     1.00000
      2    14     4.00000
@@ -37,8 +37,8 @@ CC: sparse triplet, Row, Col, Value.
      1           1.00000
      2           6.00000
      0           1.00000
-     1           1.00000
      3           7.00000
+     1           1.00000
      0           2.00000
      3           3.00000
 
@@ -46,6 +46,6 @@ CC: sparse triplet, Row, Col, Value.
 -------------Time Sheet-------------
 Data Read:		0 ms
 Format Conversion:	0 ms
-CC Write:		2 ms
-ST Write:		2 ms
+CC Write:		7 ms
+ST Write:		9 ms
 ------------------------------------
