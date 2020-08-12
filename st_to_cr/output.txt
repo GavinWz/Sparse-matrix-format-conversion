@@ -22,7 +22,7 @@ The matrix in ST format:
 
 CR: sparse triplet, Row, Col, Value.
   The matrix in CR format:
-   Row    Col    Value 
+   Rows   Cols   Values 
    ----   ----   ----  
      0     0     1.00000
      2     3     9.00000
@@ -42,8 +42,8 @@ CR: sparse triplet, Row, Col, Value.
 
 ------------------------------------
 -------------Time Sheet-------------
-Data Read:		0 ms
+Data Read:		5 ms
 Format Conversion:	0 ms
-CC Write:		3 ms
-ST Write:		1 ms
+CC Write:		5 ms
+ST Write:		5 ms
 ------------------------------------

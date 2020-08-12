@@ -25,7 +25,7 @@ make
 ## 函数及参数含义
 1. st_read
 ```c
-void st_read(char* filename, st_fmt* st, int* n_row, int* n_col);
+clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col);
 ```
 功能：
 
@@ -33,15 +33,30 @@ void st_read(char* filename, st_fmt* st, int* n_row, int* n_col);
 
 参数说明：
 
-char* filename: 保存st格式稀疏矩阵的文件的文件名
-st_fmt* st: 输入的st格式矩阵
-int* n_row: 原矩阵行数
-int* n_col: 原矩阵列数
+    char* filename: 保存st格式稀疏矩阵的文件的文件名
+    st_fmt* st: 输入的st格式矩阵
+    int* n_row: 保存原矩阵行数
+    int* n_col: 保存原矩阵列数
 
+返回值: 程序运行时间，单位：毫秒(ms)
 
-2. st_to_cr
+2. st_cr_sort
 ```c
-void st_to_cr(st_fmt st, cr_fmt* cr, int n_row)；
+void st_cr_sort(st_fmt* st, int left, int right)
+```
+功能：
+
+    利用快速排序算法，将ST格式矩阵按行偏移从小到大排列
+
+参数说明：
+
+    st_fmt* st: ST格式矩阵指针 
+    int left: 快速排序左指针: 0
+    int right: 快速排序右指针: st.n_val-1
+
+3. st_to_cr
+```c
+clock_t st_to_cr(st_fmt st, cr_fmt* cr, int n_row)；
 ```
 功能：
 
@@ -53,9 +68,11 @@ void st_to_cr(st_fmt st, cr_fmt* cr, int n_row)；
     cr_fmt* cr: 保存结果的CR格式矩阵
     int n_row: 原矩阵行数
 
-3. st_write
+返回值: 程序运行时间，单位：毫秒(ms)
+
+4. st_write
 ```c
-void st_write(char* filename,st_fmt st)
+clock_t st_write(char* filename,st_fmt st)
 ```
 功能：
 
@@ -66,9 +83,11 @@ void st_write(char* filename,st_fmt st)
     char* filename: 输出文件的文件名
     st_fmt st: ST格式结构体变量
 
-4. cr_write
+返回值: 程序运行时间，单位：毫秒(ms)
+
+5. cr_write
 ```c
-void cr_write(char* filename,cr_fmt cr)；
+clock_t cr_write(char* filename,cr_fmt cr)；
 ```
 功能：
     
@@ -79,3 +98,39 @@ void cr_write(char* filename,cr_fmt cr)；
     char* filename: 输出文件名
     cr_fmt cr: CR格式矩阵
 
+返回值: 程序运行时间，单位：毫秒(ms)
+
+6. time_write
+```c
+void time_write(
+    char* filename, 
+    clock_t read_t, 
+    clock_t convert_t, 
+    clock_t write_t1, 
+    clock_t write_t2
+);
+```
+功能：
+
+    输出各个环节的时间花费
+
+参数说明：
+
+    char* filename: 输出文件名
+    clock_t read_t: 数据读取的时间花费
+    clock_t convert_t: 格式转换的时间花费
+    clock_t write_t1: 原矩阵写入的时间花费
+    clock_t write_t2: 结果矩阵写入的时间花费
+
+7. st_to_cr_run 
+```c
+void st_to_cr_run(char* ifilename, char* ofilename)
+```
+功能：
+
+    给出输入文件名和输出文件名，进行读取、转换和保存
+
+参数说明：
+
+    char* ifilename: 保存ST矩阵的文件名
+    char* ofilename: 保存CR结果矩阵的文件名
