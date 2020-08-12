@@ -61,7 +61,7 @@ typedef struct hyb{
 ## 函数及参数含义
 1. st_read
 ```c
-void st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max);
+clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max);
 ```
 功能：
 
@@ -75,10 +75,11 @@ int* n_row: 原矩阵行数
 int* n_col: 原矩阵列数
 int* max: 用户定义的HYB格式中每行最多容纳的非零元个数
 
+返回值: 程序运行时间，单位：毫秒(ms)
 
 2. st_to_hyb
 ```c
-void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col)
+clock_t st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col)
 ```
 功能：
 
@@ -90,36 +91,26 @@ void st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col)
     int n_row:      原二维矩阵的行数    
     int n_col:      原二维矩阵的列数
 
+返回值: 程序运行时间，单位：毫秒(ms)
+
 3. st_write
 ```c
-void st_write(
-    char* filename, 
-    int m, 
-    int n, 
-    int nst, 
-    int ist[],
-    int jst[], 
-    double ast[], 
-    char *title );
+clock_t st_write(char* filename,st_fmt st)
 ```
 功能：
 
-    将原ST数组展示在输出文件中
+    将输入文件中的ST数组展示在输出文件中
 
 参数说明：
 
-    char* filename: 保存st格式稀疏矩阵的文件的文件名
-    int m:      原二维矩阵的行数  
-    int n:      原二维矩阵的列数
-    int nst[]:    非零元个数
-    int ist[]:   行偏移数组  
-    int jst[]:   列偏移数组  
-    double ast[]: 非零元数组
-    char *title: 补充说明
+    char* filename: 输出文件的文件名
+    st_fmt st: ST格式结构体变量
+
+返回值: 程序运行时间，单位：毫秒(ms)
 
 4. hyb_write
 ```c
-void hyb_write(char* filename, hyb_fmt hyb, int n_row)
+clock_t hyb_write(char* filename, hyb_fmt hyb, int n_row)
 ```
 功能：
 
@@ -131,7 +122,31 @@ void hyb_write(char* filename, hyb_fmt hyb, int n_row)
     hyb_fmt hyb:   保存结果的HYB类型矩阵
     int n_row:      原二维矩阵的行数
 
-5. st_to_hyb_run
+返回值: 程序运行时间，单位：毫秒(ms)
+
+5. time_write
+```c
+void time_write(
+    char* filename, 
+    clock_t read_t, 
+    clock_t convert_t, 
+    clock_t write_t1, 
+    clock_t write_t2
+);
+```
+功能：
+
+    输出各个环节的时间花费
+
+参数说明：
+
+    char* filename: 输出文件名
+    clock_t read_t: 数据读取的时间花费
+    clock_t convert_t: 格式转换的时间花费
+    clock_t write_t1: 原矩阵写入的时间花费
+    clock_t write_t2: 结果矩阵写入的时间花费
+
+6. st_to_hyb_run
 ```c
    void st_to_hyb_run(char* ifilename, char* ofilename)
 ```

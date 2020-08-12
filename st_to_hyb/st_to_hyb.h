@@ -27,4 +27,6 @@ clock_t hyb_write(char* filename, hyb_fmt hyb, int n_row);
 
 clock_t st_write(char* filename, st_fmt st);
 
+void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write_t1, clock_t write_t2);
+
 void st_to_hyb_run(char* ifilename, char* ofilename);
