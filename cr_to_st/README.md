@@ -87,7 +87,13 @@ clock_t st_write(char* filename,st_fmt st)
 
 5. time_write
 ```c
-    void time_write(char* filename, clock_t read_t, clock_t convert_t, clock_t write_t1, clock_t write_t2)
+void time_write(
+    char* filename, 
+    clock_t read_t, 
+    clock_t convert_t, 
+    clock_t write_t1, 
+    clock_t write_t2
+);
 ```
 功能：
 
