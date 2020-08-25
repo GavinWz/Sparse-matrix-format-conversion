@@ -23,7 +23,7 @@ The matrix in ST format:
 CR: sparse triplet, Row, Col, Value.
   The matrix in CR format:
    Rows   Cols   Values 
-   ----   ----   ----  
+   ----   ----   ----   
      0     0     1.00000
      2     3     9.00000
      5     0     5.00000

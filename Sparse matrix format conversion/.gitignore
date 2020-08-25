@@ -1,0 +1,8 @@
+*.o
+*.obj
+*.zip
+*.exe
+.vscode
+*.pdf
+tempCodeRunnerFile.c
+tempCodeRunnerFile.cpp
