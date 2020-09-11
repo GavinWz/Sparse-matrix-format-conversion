@@ -125,4 +125,5 @@ void dia_to_st_run(char* ifilename, char* ofilename){
     dia_write_t = dia_write("output.txt", dia);
     st_write_t = st_write("output.txt", st);
     time_write(ofilename, dia_read_t, convert_t, dia_write_t, st_write_t);
+    
 }
