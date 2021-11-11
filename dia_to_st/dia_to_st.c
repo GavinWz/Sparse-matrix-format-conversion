@@ -31,9 +31,9 @@ clock_t dia_read(char* filename, dia_fmt* dia){
 
 clock_t dia_to_st(dia_fmt dia, st_fmt* st){
     clock_t begin = clock();
-    (*st).ist = (int*)malloc(sizeof(int) * dia.n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * dia.n_val);
-    (*st).ast = (double*)malloc(sizeof(double) * dia.n_val);
+    st->ist = (int*)malloc(sizeof(int) * dia.n_val);
+    st->jst = (int*)malloc(sizeof(int) * dia.n_val);
+    st->ast = (double*)malloc(sizeof(double) * dia.n_val);
     int index = 0; //st矩阵下标
     int tag = 0;
     for(int order = 0; order < dia.ndiag; order++){
@@ -49,14 +49,14 @@ clock_t dia_to_st(dia_fmt dia, st_fmt* st){
         tag += skip;
         for(int k = 0; k < dia.ldiag - skip; k++){
             if(dia.val_dia[tag] != 0){
-                (*st).ist[index] = i >= 0 ? i : -1 * i;
-                (*st).jst[index] = j;
-                (*st).ast[index] = dia.val_dia[tag];
+                st->ist[index] = i >= 0 ? i : -1 * i;
+                st->jst[index] = j;
+                st->ast[index] = dia.val_dia[tag];
                 index++;
             }
             i++, j++, tag++;
         }
-        (*st).n_val = index;
+        st->n_val = index;
     }
     clock_t end = clock();
     return end - begin;

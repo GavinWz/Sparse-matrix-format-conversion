@@ -10,16 +10,16 @@ clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
     int n_val;
     fscanf(file, "%d%d%d", &(*n_row), &(*n_col), &n_val);
     
-    (*st).ast = (double*)malloc(sizeof(double) * n_val);
-    (*st).ist = (int*)malloc(sizeof(int) * n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+    st->ast = (double*)malloc(sizeof(double) * n_val);
+    st->ist = (int*)malloc(sizeof(int) * n_val);
+    st->jst = (int*)malloc(sizeof(int) * n_val);
     
     int index = 0;
     while(feof(file) == 0){
-        fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
+        fscanf(file, "%d%d%lf", &(st->ist[index]), &(st->jst[index]), &(st->ast[index]));
         index++;
     }
-    (*st).n_val = n_val;
+    st->n_val = n_val;
     fclose(file);
     clock_t end = clock();
     return end - begin;

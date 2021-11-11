@@ -10,16 +10,16 @@ clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
     int n_val;
     fscanf(file, "%d%d%d", &(*n_row), &(*n_col), &n_val);
     
-    (*st).ast = (double*)malloc(sizeof(double) * n_val);
-    (*st).ist = (int*)malloc(sizeof(int) * n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+    st->ast = (double*)malloc(sizeof(double) * n_val);
+    st->ist = (int*)malloc(sizeof(int) * n_val);
+    st->jst = (int*)malloc(sizeof(int) * n_val);
     
     int index = 0;
     while(feof(file) == 0){
-        fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
+        fscanf(file, "%d%d%lf", &(st->ist[index]), &(st->jst[index]), &(st->ast[index]));
         index++;
     }
-    (*st).n_val = n_val;
+    st->n_val = n_val;
     fclose(file);
     clock_t end = clock();
     return end - begin;
@@ -60,21 +60,21 @@ clock_t st_to_cc(st_fmt st, cc_fmt* cc, int n_row){
     clock_t begin = clock();
     int index = 1;
     int tag = st.jst[0];    //记录当前列偏移值
-    (*cc).ccc = (int*)malloc(sizeof(int) * n_row + 1);
-    (*cc).rcc = (int*)malloc(sizeof(int) * st.n_val);
-    (*cc).vcc = (double*)malloc(sizeof(double) * st.n_val);
-    (*cc).ccc[0] = 0;
+    cc->ccc = (int*)malloc(sizeof(int) * n_row + 1);
+    cc->rcc = (int*)malloc(sizeof(int) * st.n_val);
+    cc->vcc = (double*)malloc(sizeof(double) * st.n_val);
+    cc->ccc[0] = 0;
     for(int i = 0; i < st.n_val; i++){
-        (*cc).rcc[i] = st.ist[i];  //行偏移和非零元不变，直接赋值
-        (*cc).vcc[i] = st.ast[i];
+        cc->rcc[i] = st.ist[i];  //行偏移和非零元不变，直接赋值
+        cc->vcc[i] = st.ast[i];
         if(st.jst[i] != tag){   //在列偏移值发生变化时更新当前列偏移值
             tag = st.jst[i];
-            (*cc).ccc[index] = i;
+            cc->ccc[index] = i;
             index++;
         }
     }
-    (*cc).ccc[index] = st.n_val;
-    (*cc).n_col = index;
+    cc->ccc[index] = st.n_val;
+    cc->n_col = index;
     clock_t end = clock();
     return end - begin;
 }

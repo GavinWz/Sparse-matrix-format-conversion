@@ -10,20 +10,20 @@ clock_t cr_read(char* filename, cr_fmt* cr, int* row){
     int n_row, n_col, n_val;
     fscanf(file, "%d%d%d", &n_row, &n_col, &n_val);
     (*row) = n_row;
-    (*cr).rcr = (int*) malloc(sizeof(int) * (n_row + 1));
-    (*cr).ccr = (int*) malloc(sizeof(int) * n_val);
-    (*cr).vcr = (double*) malloc(sizeof(double) * n_val);
+    cr->rcr = (int*) malloc(sizeof(int) * (n_row + 1));
+    cr->ccr = (int*) malloc(sizeof(int) * n_val);
+    cr->vcr = (double*) malloc(sizeof(double) * n_val);
     
     for(int i = 0; i < n_val; i++){
         if(i <= n_row){
-            fscanf(file, "%d%lf%d", &(*cr).ccr[i], &(*cr).vcr[i], &(*cr).rcr[i]);
+            fscanf(file, "%d%lf%d", &cr->ccr[i], &cr->vcr[i], &cr->rcr[i]);
         }
         else
         {
-            fscanf(file, "%d%lf", &(*cr).ccr[i], &(*cr).vcr[i]);
+            fscanf(file, "%d%lf", &cr->ccr[i], &cr->vcr[i]);
         }
     }
-    (*cr).n_row = n_row;
+    cr->n_row = n_row;
     clock_t end = clock();
     return end - begin;
 }
@@ -32,18 +32,18 @@ clock_t cr_to_st(cr_fmt cr, st_fmt* st, int n_row){
     clock_t begin = clock();
     int index = 1;
     int n_val = cr.rcr[n_row];  //rcr[n_row]记录非零元个数
-    (*st).ist = (int*)malloc(sizeof(int) * n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * n_val);
-    (*st).ast = (double*)malloc(sizeof(double) * n_val);
+    st->ist = (int*)malloc(sizeof(int) * n_val);
+    st->jst = (int*)malloc(sizeof(int) * n_val);
+    st->ast = (double*)malloc(sizeof(double) * n_val);
 
     for(int i = 0; i < n_val; i++){  
         if(i == cr.rcr[index])
             index++;
-        (*st).ist[i] = index-1;
-        (*st).jst[i] = cr.ccr[i];
-        (*st).ast[i] = cr.vcr[i];
+        st->ist[i] = index-1;
+        st->jst[i] = cr.ccr[i];
+        st->ast[i] = cr.vcr[i];
     }
-    (*st).n_val = cr.rcr[n_row];
+    st->n_val = cr.rcr[n_row];
     clock_t end = clock();
     return end - begin;
 }

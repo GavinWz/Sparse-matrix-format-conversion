@@ -42,8 +42,8 @@ The matrix in ST format:
 
 ------------------------------------
 -------------Time Sheet-------------
-Data Read:		5 ms
+Data Read:		0 ms
 Format Conversion:	0 ms
-CC Write:		7 ms
-ST Write:		4 ms
+CC Write:		0 ms
+ST Write:		0 ms
 ------------------------------------

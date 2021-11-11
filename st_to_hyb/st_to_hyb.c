@@ -13,16 +13,16 @@ clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max){
         printf("The max limit per row must be greater than 0.\n");
         return -2;
     }
-    (*st).ast = (double*)malloc(sizeof(double) * n_val);
-    (*st).ist = (int*)malloc(sizeof(int) * n_val);
-    (*st).jst = (int*)malloc(sizeof(int) * n_val);
+    st->ast = (double*)malloc(sizeof(double) * n_val);
+    st->ist = (int*)malloc(sizeof(int) * n_val);
+    st->jst = (int*)malloc(sizeof(int) * n_val);
     
     int index = 0;
     while(feof(file) == 0){
-        fscanf(file, "%d%d%lf", &((*st).ist[index]), &((*st).jst[index]), &((*st).ast[index]));
+        fscanf(file, "%d%d%lf", &(st->ist[index]), &(st->jst[index]), &(st->ast[index]));
         index++;
     }
-    (*st).n_val = n_val;
+    st->n_val = n_val;
     fclose(file);
     clock_t end = clock();
     return end - begin;
@@ -30,40 +30,40 @@ clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col, int* max){
 
 clock_t st_to_hyb(st_fmt st, hyb_fmt* hyb, int n_row, int n_col){
     clock_t begin = clock();
-    (*hyb).ist = (int*)malloc(sizeof(int) * (n_col - (*hyb).max));
-    (*hyb).jst = (int*)malloc(sizeof(int) * (n_col - (*hyb).max));
-    (*hyb).ast = (double*)malloc(sizeof(double) * (n_col - (*hyb).max));
-    (*hyb).eData = (double**)malloc(sizeof(double) * n_row * (*hyb).max);
-    (*hyb).offset = (int**)malloc(sizeof(int) * n_row * (*hyb).max);
+    hyb->ist = (int*)malloc(sizeof(int) * (n_col - hyb->max));
+    hyb->jst = (int*)malloc(sizeof(int) * (n_col - hyb->max));
+    hyb->ast = (double*)malloc(sizeof(double) * (n_col - hyb->max));
+    hyb->eData = (double**)malloc(sizeof(double) * n_row * hyb->max);
+    hyb->offset = (int**)malloc(sizeof(int) * n_row * hyb->max);
 
     int cnt = 0;
     int index = -1;
     int j_index = 0;
     int e_index = 0;
-    (*hyb).n_val = 0;
+    hyb->n_val = 0;
 
     for(int i = 0; i < st.n_val; i++){
         if(index == st.ist[i])
             cnt++;
         else{
             index = st.ist[i];
-            while(j_index < (*hyb).max){
-                *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = -1;
+            while(j_index < hyb->max){
+                *((int*)hyb->offset+st.ist[i]*hyb->max+j_index) = -1;
                 j_index++;
             }
             cnt = 1;
             j_index = 0;
         }
-        if(cnt <= (*hyb).max){
-            *((int*)(*hyb).offset+st.ist[i]*(*hyb).max+j_index) = st.jst[i];
-            *((double*)(*hyb).eData+st.ist[i]*(*hyb).max+j_index) = st.ast[i];
+        if(cnt <= hyb->max){
+            *((int*)hyb->offset+st.ist[i]*hyb->max+j_index) = st.jst[i];
+            *((double*)hyb->eData+st.ist[i]*hyb->max+j_index) = st.ast[i];
             j_index++;
         }
         else{
-            (*hyb).ist[(*hyb).n_val] = st.ist[i];
-            (*hyb).jst[(*hyb).n_val] = st.jst[i];
-            (*hyb).ast[(*hyb).n_val] = st.ast[i];
-            (*hyb).n_val++;
+            hyb->ist[hyb->n_val] = st.ist[i];
+            hyb->jst[hyb->n_val] = st.jst[i];
+            hyb->ast[hyb->n_val] = st.ast[i];
+            hyb->n_val++;
         }
     }
     clock_t end = clock();

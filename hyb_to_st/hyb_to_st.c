@@ -9,33 +9,33 @@ clock_t hyb_read(char* filename, hyb_fmt *hyb, int* row){
         printf("Can't open the file.\n");
         return -1;
     }
-    fscanf(file, "%d%d%d", &n_row, &n_col, &(*hyb).max);
-    if((*hyb).max < 1){
+    fscanf(file, "%d%d%d", &n_row, &n_col, &hyb->max);
+    if(hyb->max < 1){
         printf("The max limit per row must be greater than 0.\n");
         return -2;
     }
 
-    (*hyb).offset = (int**)malloc(sizeof(int)*n_col*(*hyb).max);
-    (*hyb).eData = (double**)malloc(sizeof(double)*n_col*(*hyb).max);
+    hyb->offset = (int**)malloc(sizeof(int)*n_col*hyb->max);
+    hyb->eData = (double**)malloc(sizeof(double)*n_col*hyb->max);
 
-    (*hyb).ist = (int*)malloc(sizeof(int)*n_row*(n_col-(*hyb).max));
-    (*hyb).jst = (int*)malloc(sizeof(int)*n_row*(n_col-(*hyb).max));
-    (*hyb).ast = (double*)malloc(sizeof(double)*n_row*(n_col-(*hyb).max));
+    hyb->ist = (int*)malloc(sizeof(int)*n_row*(n_col-hyb->max));
+    hyb->jst = (int*)malloc(sizeof(int)*n_row*(n_col-hyb->max));
+    hyb->ast = (double*)malloc(sizeof(double)*n_row*(n_col-hyb->max));
 
     for(i = 0; i < n_row; i++){
-        for(j = 0; j < (*hyb).max; j++){
-            fscanf(file, "%d", &*((int*)(*hyb).offset+i*(*hyb).max+j));
+        for(j = 0; j < hyb->max; j++){
+            fscanf(file, "%d", &*((int*)hyb->offset+i*hyb->max+j));
         }
     }
     for(i = 0; i < n_row; i++){
-        for(j = 0; j < (*hyb).max; j++){
-            fscanf(file, "%lf", &*((double*)(*hyb).eData+i*(*hyb).max+j));
+        for(j = 0; j < hyb->max; j++){
+            fscanf(file, "%lf", &*((double*)hyb->eData+i*hyb->max+j));
         }
     }
     for(i = 0; feof(file) == 0; i++){
-        fscanf(file, "%d%d%lf", &(*hyb).ist[i], &(*hyb).jst[i], &(*hyb).ast[i]);
+        fscanf(file, "%d%d%lf", &hyb->ist[i], &hyb->jst[i], &hyb->ast[i]);
     }
-    (*hyb).n_val = i;
+    hyb->n_val = i;
     (*row) = n_row;
     clock_t end = clock();
     return end - begin;
@@ -43,28 +43,28 @@ clock_t hyb_read(char* filename, hyb_fmt *hyb, int* row){
 
 clock_t hyb_to_st(hyb_fmt hyb, st_fmt *st, int n_row){
     clock_t begin = clock();
-    (*st).ist = (int*)malloc(sizeof(int) * n_row * hyb.max);
-    (*st).jst = (int*)malloc(sizeof(int) * n_row * hyb.max);
-    (*st).ast = (double*)malloc(sizeof(double) * n_row * hyb.max);
+    st->ist = (int*)malloc(sizeof(int) * n_row * hyb.max);
+    st->jst = (int*)malloc(sizeof(int) * n_row * hyb.max);
+    st->ast = (double*)malloc(sizeof(double) * n_row * hyb.max);
     int index = 0;
     int i, j;
     for(i = 0; i < n_row; i++){
         for(j = 0; j < hyb.max; j++){
             if(*((int*)hyb.offset + i * hyb.max + j) == -1)
                 break;
-            (*st).ist[index] = i;
-            (*st).jst[index] = *((int*)hyb.offset + i * hyb.max + j);
-            (*st).ast[index] = *((double*)hyb.eData + i * hyb.max + j);
+            st->ist[index] = i;
+            st->jst[index] = *((int*)hyb.offset + i * hyb.max + j);
+            st->ast[index] = *((double*)hyb.eData + i * hyb.max + j);
             index++;
         }
     }
     for(i = 0; i < hyb.n_val; i++){
-        (*st).ist[index] = hyb.ist[i];
-        (*st).jst[index] = hyb.jst[i];
-        (*st).ast[index] = hyb.ast[i];
+        st->ist[index] = hyb.ist[i];
+        st->jst[index] = hyb.jst[i];
+        st->ast[index] = hyb.ast[i];
         index++;
     }
-    (*st).n_val = index;
+    st->n_val = index;
     clock_t end = clock();
     return end - begin;
 }
