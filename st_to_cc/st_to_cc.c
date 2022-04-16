@@ -1,4 +1,5 @@
 #include"st_to_cc.h"
+#include<omp.h>
 
 clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
     clock_t begin = clock();
@@ -19,6 +20,8 @@ clock_t st_read(char* filename, st_fmt* st, int* n_row, int* n_col){
         fscanf(file, "%d%d%lf", &(st->ist[index]), &(st->jst[index]), &(st->ast[index]));
         index++;
     }
+
+    
     st->n_val = n_val;
     fclose(file);
     clock_t end = clock();
