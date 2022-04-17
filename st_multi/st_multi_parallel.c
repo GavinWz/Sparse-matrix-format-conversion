@@ -47,8 +47,8 @@ int exists(st_fmt st, int row, int col){
     return -1;
 }
 
-void new_a_place(st_fmt *st){  //开辟空间一个空间
-    if(st->n_val == 0){  //若矩阵为空，则初始化一个空间
+void new_a_place(st_fmt *st){
+    if(st->n_val == 0){
         st->ist = (int*)malloc(sizeof(int));
         st->jst = (int*)malloc(sizeof(int));
         st->ast = (double*)malloc(sizeof(double));    
@@ -57,7 +57,7 @@ void new_a_place(st_fmt *st){  //开辟空间一个空间
         st->ast[0] = 0;
         st->n_val = 1;
     }
-    else{  //若矩阵不为空，则动态增加一个空间
+    else{
         st->ist = (int*)realloc(st->ist, sizeof(int) * (st->n_val + 1));
         st->jst = (int*)realloc(st->jst, sizeof(int) * (st->n_val + 1));
         st->ast = (double*)realloc(st->ast, sizeof(double) * (st->n_val + 1));
@@ -82,12 +82,16 @@ void multi(st_fmt m1, st_fmt m2, st_fmt *result){
     result->n_val = 0;
     
     //乘法运算
+    //外层交给MPI（待实现）
     for(int i = 0; i < m1.n_val; i++){  //外层遍历m1
+        //内层交给OpenMP
+        #pragma omp parallel for
         for(int j = 0; j < m2.n_val; j++){  //内层遍历m2
             if(m1.jst[i] == m2.ist[j]){  //当m1列号 = m2行号时，运算有效
                 int index = exists(*result, m1.ist[i], m2.jst[j]);
                 if(index == -1){   //每当对应的行列号第一次出现时，为结果矩阵开辟一个空间
-                    new_a_place(result);
+                    #pragma omp critical  //该函数中涉及n_val的更新和空间分配，需同步访问
+                        new_a_place(result);
                     result->ist[result->n_val-1] = m1.ist[i];  //新增的项的行号为m1的行号
                     result->jst[result->n_val-1] = m2.jst[j];  //列号为m2的列号
                     result->ast[result->n_val-1] += m1.ast[i] * m2.ast[j];  //初始化该行列对应元素值为第此遍历到的两值相乘
@@ -102,7 +106,6 @@ void multi(st_fmt m1, st_fmt m2, st_fmt *result){
     printf("%d\n", end - start);
     return;
 }
-
 int main(){
     st_fmt st, result;
     int n_row, n_col;
