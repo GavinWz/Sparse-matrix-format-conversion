@@ -83,9 +83,10 @@ void multi(st_fmt m1, st_fmt m2, st_fmt *result){
     
     //乘法运算
     //外层交给MPI（待实现）
+    #pragma omp parallel for
     for(int i = 0; i < m1.n_val; i++){  //外层遍历m1
         //内层交给OpenMP
-        #pragma omp parallel for
+        // #pragma omp parallel for
         for(int j = 0; j < m2.n_val; j++){  //内层遍历m2
             if(m1.jst[i] == m2.ist[j]){  //当m1列号 = m2行号时，运算有效
                 int index = exists(*result, m1.ist[i], m2.jst[j]);
